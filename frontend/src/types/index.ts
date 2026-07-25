@@ -23,6 +23,13 @@ export interface PaginatedResponse<T> {
   results: T[];
 }
 
+/** Paginated response nested inside an API envelope */
+export interface PaginatedApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: PaginatedResponse<T>;
+}
+
 export interface ApiError {
   success: false;
   message: string;
@@ -78,21 +85,34 @@ export interface LeaveType {
   is_active: boolean;
 }
 
+/**
+ * LeaveRequest — unified type covering both the employee list/detail
+ * responses (Phase 2) and the manager responses (Phase 3).
+ *
+ * Phase 2 LeaveListSerializer  → uses `duration_days`, no nested employee/leave_type
+ * Phase 2 LeaveDetailSerializer → uses `duration_days`, nested employee (no leave_type)
+ * Manager serializer           → uses `total_days`, nested employee + leave_type
+ */
 export interface LeaveRequest {
   id: number;
-  employee: User;
-  leave_type: LeaveType;
+  /** Present in detail and manager views; absent in compact list */
+  employee?: User | null;
+  /** Nullable — Phase 2 employee submissions have no leave type */
+  leave_type?: LeaveType | null;
   start_date: string;
   end_date: string;
-  total_days: number;
+  /** Returned by manager serializer */
+  total_days?: number;
+  /** Returned by Phase 2 employee serializers */
+  duration_days?: number;
   reason: string;
   status: LeaveStatus;
   status_display: string;
-  reviewed_by: User | null;
-  reviewer_comment: string;
-  reviewed_at: string | null;
+  reviewed_by?: User | null;
+  reviewer_comment?: string;
+  reviewed_at?: string | null;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export interface LeaveBalance {
@@ -132,4 +152,15 @@ export interface DashboardData {
   summary: DashboardSummary;
   leave_type_distribution: LeaveTypeDistribution[];
   monthly_trends: MonthlyTrend[];
+}
+
+// ─────────────────────────────────────────
+// Employee dashboard stats (computed client-side)
+// ─────────────────────────────────────────
+export interface EmployeeLeaveStats {
+  remaining: number;
+  approved: number;
+  pending: number;
+  cancelled: number;
+  rejected: number;
 }

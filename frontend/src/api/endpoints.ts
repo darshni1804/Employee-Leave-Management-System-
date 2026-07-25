@@ -22,7 +22,20 @@ export const AUTH_ENDPOINTS = {
 } as const;
 
 // ─────────────────────────────────────────
-// Leaves
+// Leaves — Employee endpoints (Phase 2)
+// Scoped to the authenticated employee's own leaves
+// ─────────────────────────────────────────
+export const EMPLOYEE_LEAVE_ENDPOINTS = {
+  /** GET list / POST apply — /api/v1/leaves/ */
+  LIST: "/leaves/",
+  /** GET detail — /api/v1/leaves/{id}/ */
+  DETAIL: (id: number) => `/leaves/${id}/`,
+  /** PATCH cancel — /api/v1/leaves/{id}/cancel/ */
+  CANCEL: (id: number) => `/leaves/${id}/cancel/`,
+} as const;
+
+// ─────────────────────────────────────────
+// Leaves — Manager/Admin endpoints (Phase 3+)
 // ─────────────────────────────────────────
 export const LEAVE_ENDPOINTS = {
   TYPES: "/leaves/types/",
