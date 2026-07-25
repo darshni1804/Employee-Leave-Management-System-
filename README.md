@@ -1,4 +1,5 @@
-# Technodha LeaveMate [TLM]
+# Technodha LeaveMate
+### Smart Employee Leave Management System
 
 [![Django](https://img.shields.io/badge/Django-5.1-092E20?style=for-the-badge&logo=django)](https://www.djangoproject.com/)
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
@@ -7,7 +8,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com/)
 
-A production-ready, full-stack **Technodha LeaveMate [TLM]** enterprise platform built with **Django REST Framework (DRF)** and **React 19 + TypeScript + Tailwind CSS**.
+A production-ready, full-stack **Technodha LeaveMate** enterprise platform built with **Django REST Framework (DRF)** and **React 19 + TypeScript + Tailwind CSS**.
 
 The system enables employees to submit leave requests and track their leave history, while allowing managers and administrators to review, approve, or reject leave requests with real-time organizational statistics.
 

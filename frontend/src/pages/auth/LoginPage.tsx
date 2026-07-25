@@ -70,9 +70,8 @@ export function LoginPage() {
   return (
     <div className="rounded-2xl border bg-card p-8 shadow-lg transition-all duration-200">
       <div className="mb-6 flex flex-col items-center justify-center text-center">
-        <TechnodhaLogo size="lg" className="mb-4" />
-        <h2 className="text-xl font-bold tracking-tight">Sign In to Technodha LeaveMate</h2>
-        <p className="text-xs text-muted-foreground mt-1">
+        <TechnodhaLogo variant="vertical" size="lg" className="mb-4" />
+        <p className="text-xs text-muted-foreground mt-2">
           Enter your Email address or Employee ID to continue
         </p>
       </div>
