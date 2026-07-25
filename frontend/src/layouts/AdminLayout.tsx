@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/store/AuthContext";
+import { TechnodhaLogo } from "@/components/shared/TechnodhaLogo";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -52,14 +53,8 @@ export function AdminLayout() {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex h-16 items-center gap-3 border-b px-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold shadow">
-            E
-          </div>
-          <span className="font-semibold text-base tracking-tight">ELMS</span>
-          <span className="ml-auto rounded text-[10px] font-medium bg-destructive/10 text-destructive px-1.5 py-0.5">
-            Admin
-          </span>
+        <div className="flex h-16 items-center border-b px-5">
+          <TechnodhaLogo size="md" />
         </div>
 
         <nav className="flex-1 space-y-0.5 p-3 overflow-y-auto">

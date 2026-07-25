@@ -197,8 +197,8 @@ CORS_ALLOW_CREDENTIALS = True
 # drf-spectacular (OpenAPI / Swagger)
 # ─────────────────────────────────────────────────────────────────
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Employee Leave Management System API",
-    "DESCRIPTION": "Production-ready REST API for Employee Leave Management System (ELMS), supporting Authentication, Employee Leave Applications, and Manager Approval Workflows.",
+    "TITLE": "Technodha LeaveMate [TLM] API",
+    "DESCRIPTION": "Production-ready REST API for Technodha LeaveMate [TLM], supporting Authentication, Employee Leave Applications, and Manager Approval Workflows.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,

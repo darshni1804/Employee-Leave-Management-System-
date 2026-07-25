@@ -7,6 +7,7 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { LayoutDashboard, CalendarDays, Wallet, UserCircle, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/store/AuthContext";
+import { TechnodhaLogo } from "@/components/shared/TechnodhaLogo";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -38,11 +39,8 @@ export function EmployeeLayout() {
         )}
       >
         {/* Brand */}
-        <div className="flex h-16 items-center gap-3 border-b px-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold shadow">
-            E
-          </div>
-          <span className="font-semibold text-base tracking-tight">ELMS</span>
+        <div className="flex h-16 items-center border-b px-5">
+          <TechnodhaLogo size="md" />
         </div>
 
         {/* Nav */}
