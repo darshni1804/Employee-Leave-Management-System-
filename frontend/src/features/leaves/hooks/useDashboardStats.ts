@@ -6,7 +6,7 @@
  * and computes: remaining, approved, pending, rejected, cancelled counts.
  *
  * Usage:
- *   const { stats, isLoading, error } = useDashboardStats();
+ *   const { stats, recentLeaves, allLeaves, isLoading, error } = useDashboardStats();
  */
 import { useState, useEffect } from "react";
 import { employeeLeavesService } from "../services/employeeLeavesService";
@@ -17,6 +17,7 @@ const MAX_ANNUAL_LEAVE = 20;
 interface UseDashboardStatsReturn {
   stats: EmployeeLeaveStats;
   recentLeaves: LeaveRequest[];
+  allLeaves: LeaveRequest[];
   isLoading: boolean;
   error: string | null;
 }
@@ -32,6 +33,7 @@ const DEFAULT_STATS: EmployeeLeaveStats = {
 export function useDashboardStats(): UseDashboardStatsReturn {
   const [stats, setStats] = useState<EmployeeLeaveStats>(DEFAULT_STATS);
   const [recentLeaves, setRecentLeaves] = useState<LeaveRequest[]>([]);
+  const [allLeaves, setAllLeaves] = useState<LeaveRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,6 +73,7 @@ export function useDashboardStats(): UseDashboardStatsReturn {
         const remaining = Math.max(MAX_ANNUAL_LEAVE - usedDays, 0);
 
         setStats({ remaining, approved, pending, cancelled: cancelled_, rejected });
+        setAllLeaves(leaves);
 
         // Keep 5 most recent for dashboard preview
         setRecentLeaves(leaves.slice(0, 5));
@@ -97,5 +100,5 @@ export function useDashboardStats(): UseDashboardStatsReturn {
     };
   }, []);
 
-  return { stats, recentLeaves, isLoading, error };
+  return { stats, recentLeaves, allLeaves, isLoading, error };
 }

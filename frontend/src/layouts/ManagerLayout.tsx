@@ -1,12 +1,12 @@
 /**
  * ManagerLayout — Sidebar + TopNavbar layout matching Reference Image 3.
+ * Nav: Dashboard | Leave Requests | Profile
  */
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import {
   LayoutDashboard,
-  Users,
-  CheckSquare,
+  ClipboardList,
   UserCircle,
 } from "lucide-react";
 import { Sidebar, type NavItemConfig } from "@/components/shared/Sidebar";
@@ -14,9 +14,8 @@ import { TopNavbar } from "@/components/shared/TopNavbar";
 
 const navLinks: NavItemConfig[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/team/leaves", label: "Team Leaves", icon: Users },
-  { to: "/approvals", label: "Approvals", icon: CheckSquare },
-  { to: "/profile", label: "Profile", icon: UserCircle, isFilledButton: true },
+  { to: "/approvals", label: "Leave Requests", icon: ClipboardList },
+  { to: "/profile", label: "Profile", icon: UserCircle },
 ];
 
 export function ManagerLayout() {

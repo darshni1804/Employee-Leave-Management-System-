@@ -5,6 +5,8 @@ from django.urls import path
 from apps.accounts.views import (
     LoginView,
     LogoutView,
+    MeChangePasswordView,
+    MeProfileUpdateView,
     MeView,
     RegisterView,
     TokenRefreshView,
@@ -22,6 +24,8 @@ urlpatterns = [
 
     # ─── Current User ─────────────────────────────────────────────
     path("me/", MeView.as_view(), name="me"),
+    path("me/profile/", MeProfileUpdateView.as_view(), name="me_profile"),
+    path("me/change-password/", MeChangePasswordView.as_view(), name="me_change_password"),
 
     # ─── Admin: User Management ───────────────────────────────────
     path("users/", UserAdminViewSet.as_view({"get": "list"}), name="user_list"),

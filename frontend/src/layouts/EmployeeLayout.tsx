@@ -1,17 +1,18 @@
 /**
  * EmployeeLayout — Sidebar + TopNavbar layout matching Reference Image 3.
+ * Nav: Dashboard | Apply Leave | Leave History | Profile
  */
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { LayoutDashboard, CalendarDays, Wallet, UserCircle } from "lucide-react";
+import { LayoutDashboard, CalendarPlus, CalendarDays, UserCircle } from "lucide-react";
 import { Sidebar, type NavItemConfig } from "@/components/shared/Sidebar";
 import { TopNavbar } from "@/components/shared/TopNavbar";
 
 const navLinks: NavItemConfig[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/leaves", label: "My Leaves", icon: CalendarDays },
-  { to: "/balances", label: "Balances", icon: Wallet },
-  { to: "/profile", label: "Profile", icon: UserCircle, isFilledButton: true },
+  { to: "/leaves", label: "Apply Leave", icon: CalendarPlus },
+  { to: "/balances", label: "Leave History", icon: CalendarDays },
+  { to: "/profile", label: "Profile", icon: UserCircle },
 ];
 
 export function EmployeeLayout() {

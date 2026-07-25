@@ -10,6 +10,7 @@ All endpoints return consistent response format:
 }
 """
 from rest_framework import status, mixins
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -128,6 +129,66 @@ class MeView(APIView):
                 "success": True,
                 "message": "User details retrieved successfully.",
                 "data": profile,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class MeProfileUpdateView(APIView):
+    """
+    PATCH /api/v1/auth/me/profile/
+    Update the currently authenticated user's profile fields.
+    Supports multipart for profile_picture uploads.
+    """
+
+    permission_classes = [AuthenticatedOnly]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+    serializer_class = UpdateProfileSerializer
+
+    def patch(self, request):
+        serializer = self.serializer_class(
+            request.user,
+            data=request.data,
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        updated_user = AccountsService.update_profile(request.user, serializer.validated_data)
+        user_data = UserSerializer(updated_user).data
+
+        return Response(
+            {
+                "success": True,
+                "message": "Profile updated successfully.",
+                "data": user_data,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class MeChangePasswordView(APIView):
+    """
+    POST /api/v1/auth/me/change-password/
+    Change the currently authenticated user's password.
+    """
+
+    permission_classes = [AuthenticatedOnly]
+    serializer_class = ChangePasswordSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        AccountsService.change_password(
+            user=request.user,
+            old_password=serializer.validated_data["old_password"],
+            new_password=serializer.validated_data["new_password"],
+        )
+
+        return Response(
+            {
+                "success": True,
+                "message": "Password changed successfully.",
+                "data": {},
             },
             status=status.HTTP_200_OK,
         )

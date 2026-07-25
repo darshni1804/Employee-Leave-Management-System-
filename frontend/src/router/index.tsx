@@ -6,6 +6,8 @@
  *  /login                → AuthLayout > LoginPage (Public)
  *  /dashboard            → Protected (All authenticated) > RoleBasedDashboardPage
  *  /leaves               → Protected (All authenticated) > LeavesPage (Employee leaves)
+ *  /balances             → Protected (All authenticated) > LeavesPage (alias)
+ *  /profile              → Protected (All authenticated) > ProfilePage
  *  /approvals, /team/*   → Protected (Manager, Admin only) > ManagerDashboardPage
  *  /users, /reports      → Protected (Admin only) > AdminLayout
  *  /unauthorized         → UnauthorizedPage
@@ -25,6 +27,7 @@ import { LoginPage } from "@/pages/auth/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 import { ManagerDashboardPage } from "@/pages/manager/ManagerDashboardPage";
 import { LeavesPage } from "@/pages/leaves/LeavesPage";
+import { ProfilePage } from "@/pages/profile/ProfilePage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { UnauthorizedPage } from "@/pages/UnauthorizedPage";
 
@@ -87,7 +90,7 @@ export const router = createBrowserRouter([
           { path: "/dashboard", element: <RoleBasedDashboardPage /> },
           { path: "/leaves", element: <LeavesPage /> },
           { path: "/balances", element: <LeavesPage /> },
-          { path: "/profile", element: <RoleBasedDashboardPage /> },
+          { path: "/profile", element: <ProfilePage /> },
         ],
       },
     ],

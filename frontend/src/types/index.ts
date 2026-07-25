@@ -176,3 +176,23 @@ export interface ManagerStatistics {
   rejected_total: number;
   cancelled_total: number;
 }
+
+// ─────────────────────────────────────────
+// Profile update payload
+// ─────────────────────────────────────────
+export interface UpdateProfilePayload {
+  first_name?: string;
+  last_name?: string;
+  phone_number?: string;
+  department?: string;
+  profile_picture?: File | null;
+}
+
+// ─────────────────────────────────────────
+// Change password payload
+// ─────────────────────────────────────────
+export interface ChangePasswordPayload {
+  old_password: string;
+  new_password: string;
+  new_password_confirm: string;
+}

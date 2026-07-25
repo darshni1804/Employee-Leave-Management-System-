@@ -1,5 +1,6 @@
 /**
  * DashboardPage — Employee Dashboard matching Reference Image 3 design system.
+ * Includes Employee Analytics section below the stat cards.
  */
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/features/auth/store/AuthContext";
 import { useDashboardStats } from "@/features/leaves/hooks/useDashboardStats";
+import { EmployeeAnalytics } from "@/features/analytics/components/EmployeeAnalytics";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SkeletonCard, Skeleton } from "@/components/ui/Skeleton";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -28,7 +30,7 @@ interface StatCard {
 export function DashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { stats, recentLeaves, isLoading, error } = useDashboardStats();
+  const { stats, recentLeaves, allLeaves, isLoading, error } = useDashboardStats();
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -183,6 +185,13 @@ export function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* ── Employee Analytics Section ── */}
+      <EmployeeAnalytics
+        leaves={allLeaves}
+        stats={stats}
+        isLoading={isLoading}
+      />
     </div>
   );
 }

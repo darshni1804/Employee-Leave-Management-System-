@@ -1,7 +1,8 @@
 /**
  * ManagerDashboardPage — Manager Module Dashboard matching Reference Image 3.
+ * Includes Manager Analytics section embedded below existing content.
  */
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ClipboardCheck, Users } from "lucide-react";
 import { useAuth } from "@/features/auth/store/AuthContext";
 import { useManagerStats } from "@/features/manager/hooks/useManagerStats";
@@ -10,9 +11,11 @@ import { ManagerStatCards } from "@/features/manager/components/ManagerStatCards
 import { ManagerLeaveFiltersBar } from "@/features/manager/components/ManagerLeaveFiltersBar";
 import { ManagerLeaveTable } from "@/features/manager/components/ManagerLeaveTable";
 import { ReviewModal } from "@/features/manager/components/ReviewModal";
+import { ManagerAnalytics } from "@/features/analytics/components/ManagerAnalytics";
 import { Pagination } from "@/components/ui/Pagination";
 import { SkeletonTable } from "@/components/ui/Skeleton";
 import { PageHeader } from "@/components/shared/PageHeader";
+import { managerService } from "@/features/manager/services/managerService";
 import type { LeaveRequest } from "@/types";
 
 export function ManagerDashboardPage() {
@@ -32,6 +35,26 @@ export function ManagerDashboardPage() {
   const [selectedLeave, setSelectedLeave] = useState<LeaveRequest | null>(null);
   const [actionType, setActionType] = useState<"approve" | "reject" | null>(null);
 
+  // All leaves for analytics (fetched separately with large page_size)
+  const [allLeaves, setAllLeaves] = useState<LeaveRequest[]>([]);
+  const [analyticsLoading, setAnalyticsLoading] = useState(true);
+
+  const fetchAllLeaves = useCallback(async () => {
+    try {
+      setAnalyticsLoading(true);
+      const response = await managerService.getLeaveRequests({ page_size: 200, page: 1 });
+      setAllLeaves(response.results);
+    } catch {
+      // Analytics data is non-critical; silently fail
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAllLeaves();
+  }, [fetchAllLeaves]);
+
   const handleApproveClick = (leave: LeaveRequest) => {
     setSelectedLeave(leave);
     setActionType("approve");
@@ -50,6 +73,7 @@ export function ManagerDashboardPage() {
   const handleReviewSuccess = () => {
     refreshLeaves();
     refreshStats();
+    fetchAllLeaves(); // Refresh analytics data too
   };
 
   const displayName = user?.first_name || user?.name?.split(" ")[0] || "Jane";
@@ -132,6 +156,13 @@ export function ManagerDashboardPage() {
           </div>
         )}
       </section>
+
+      {/* ── Manager Analytics Section ── */}
+      <ManagerAnalytics
+        leaves={allLeaves}
+        stats={stats}
+        isLoading={analyticsLoading || isStatsLoading}
+      />
 
       {/* Review Modal (Approve / Reject) */}
       <ReviewModal
