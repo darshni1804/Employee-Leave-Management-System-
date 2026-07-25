@@ -16,10 +16,11 @@ from __future__ import annotations
 import logging
 from datetime import date
 from typing import TYPE_CHECKING
-
+from django.db import transaction
 from django.db.models import Q, Sum
 
 from core.exceptions import ServiceError
+from apps.notifications.email_service import EmailService
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -130,6 +131,9 @@ class LeavesService:
             end_date,
             total_days,
         )
+        transaction.on_commit(
+            lambda: EmailService.send_leave_applied_email(leave_request)
+        )
         return leave_request
 
     @staticmethod
@@ -174,6 +178,9 @@ class LeavesService:
             "Leave request #%s cancelled by employee %s.",
             leave_request.pk,
             employee.pk,
+        )
+        transaction.on_commit(
+            lambda: EmailService.send_leave_cancelled_email(leave_request)
         )
         return leave_request
 
@@ -316,6 +323,9 @@ class LeavesService:
             leave_request.pk,
             reviewer.pk,
         )
+        transaction.on_commit(
+            lambda: EmailService.send_leave_approved_email(leave_request, reviewer)
+        )
         return leave_request
 
     @staticmethod
@@ -361,6 +371,9 @@ class LeavesService:
             "Leave request #%s rejected by manager %s.",
             leave_request.pk,
             reviewer.pk,
+        )
+        transaction.on_commit(
+            lambda: EmailService.send_leave_rejected_email(leave_request, reviewer)
         )
         return leave_request
 

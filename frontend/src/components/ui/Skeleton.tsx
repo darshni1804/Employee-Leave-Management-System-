@@ -30,13 +30,13 @@ export function Skeleton({ className }: SkeletonProps) {
 // ─────────────────────────────────────────
 export function SkeletonCard() {
   return (
-    <div className="rounded-xl border bg-card p-6 shadow-sm">
+    <div className="rounded-[18px] border border-[#E5E7EB] bg-white p-6 shadow-xs">
       <div className="flex items-center justify-between mb-4">
         <Skeleton className="h-4 w-28" />
-        <Skeleton className="h-9 w-9 rounded-lg" />
+        <Skeleton className="h-10 w-10 rounded-xl" />
       </div>
-      <Skeleton className="h-8 w-16 mb-1" />
-      <Skeleton className="h-3 w-24" />
+      <Skeleton className="h-9 w-20 mb-2" />
+      <Skeleton className="h-3 w-32" />
     </div>
   );
 }

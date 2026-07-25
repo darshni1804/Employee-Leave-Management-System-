@@ -1,15 +1,8 @@
 /**
- * ManagerDashboardPage — Complete Manager Module Page.
- *
- * Displays:
- * - Real-time Manager Statistics cards (Pending, Approved Today, Total Employees, etc.)
- * - Search & Filter bar (employee name, ID, email, reason, status, date range)
- * - Manager Leave Table (with Approve & Reject actions for PENDING requests)
- * - Pagination controls
- * - Review modal for confirming actions with optional comments
+ * ManagerDashboardPage — Manager Module Dashboard matching Reference Image 3.
  */
 import { useState } from "react";
-import { Users, ClipboardCheck } from "lucide-react";
+import { ClipboardCheck, Users } from "lucide-react";
 import { useAuth } from "@/features/auth/store/AuthContext";
 import { useManagerStats } from "@/features/manager/hooks/useManagerStats";
 import { useManagerLeaves } from "@/features/manager/hooks/useManagerLeaves";
@@ -19,6 +12,7 @@ import { ManagerLeaveTable } from "@/features/manager/components/ManagerLeaveTab
 import { ReviewModal } from "@/features/manager/components/ReviewModal";
 import { Pagination } from "@/components/ui/Pagination";
 import { SkeletonTable } from "@/components/ui/Skeleton";
+import { PageHeader } from "@/components/shared/PageHeader";
 import type { LeaveRequest } from "@/types";
 
 export function ManagerDashboardPage() {
@@ -58,43 +52,42 @@ export function ManagerDashboardPage() {
     refreshStats();
   };
 
-  const displayName = user?.first_name || user?.name || "Manager";
+  const displayName = user?.first_name || user?.name?.split(" ")[0] || "Jane";
 
   return (
-    <div className="space-y-8 max-w-6xl">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 mb-1">
-          <ClipboardCheck className="h-6 w-6 text-primary" />
-          <h1 className="text-2xl font-bold tracking-tight">Manager Dashboard</h1>
-        </div>
-        <p className="text-muted-foreground text-sm">
-          Welcome back, {displayName}. Manage team leave requests and view organisation statistics.
-        </p>
-      </div>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Page Header (Matching Reference Image 3) */}
+      <PageHeader
+        icon={ClipboardCheck}
+        title="Manager Dashboard"
+        subtitle={`Welcome back, ${displayName}. Manage team leave requests and view organisation insights.`}
+      />
 
-      {/* Statistics Cards */}
-      <section>
-        <div className="flex items-center gap-2 mb-3">
-          <Users className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-base font-semibold">Team Statistics</h2>
+      {/* Team Statistics Section */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2.5">
+          <Users className="h-5 w-5 text-[#475569]" />
+          <h2 className="font-heading font-semibold text-lg text-[#111827]">
+            Team Statistics
+          </h2>
         </div>
+
         <ManagerStatCards stats={stats} isLoading={isStatsLoading} />
       </section>
 
       {/* Leave Requests Management Section */}
-      <section className="space-y-4 pt-2">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-3">
+      <section className="space-y-5 pt-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E5E7EB] pb-4">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight">
+            <h2 className="font-heading font-bold text-xl text-[#111827]">
               All Leave Requests
             </h2>
-            <p className="text-xs text-muted-foreground">
+            <p className="font-sans text-xs text-[#64748B] mt-0.5">
               Review, approve, or reject employee leave applications.
             </p>
           </div>
           {!isLeavesLoading && pagination && (
-            <span className="text-xs text-muted-foreground self-start sm:self-auto">
+            <span className="font-sans text-xs font-semibold text-[#64748B] bg-[#F1F5F9] px-3 py-1 rounded-full self-start sm:self-auto">
               Total {pagination.count} request{pagination.count !== 1 ? "s" : ""}
             </span>
           )}
@@ -109,7 +102,7 @@ export function ManagerDashboardPage() {
 
         {/* Error notification */}
         {error && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/8 px-4 py-3 text-sm text-destructive">
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-700">
             {error}
           </div>
         )}
@@ -128,7 +121,7 @@ export function ManagerDashboardPage() {
         {/* Pagination */}
         {!isLeavesLoading && pagination && pagination.total_pages > 1 && (
           <div className="flex items-center justify-between pt-2">
-            <p className="text-xs text-muted-foreground">
+            <p className="font-sans text-xs text-[#64748B]">
               Page {pagination.page} of {pagination.total_pages}
             </p>
             <Pagination

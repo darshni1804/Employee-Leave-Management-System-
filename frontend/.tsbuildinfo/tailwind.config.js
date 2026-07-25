@@ -14,12 +14,23 @@ const config = {
             },
         },
         extend: {
+            fontFamily: {
+                heading: ["Poppins", "sans-serif"],
+                sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+                mono: ["'JetBrains Mono'", "monospace"],
+            },
             colors: {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
+                brand: {
+                    primary: "#1A183E",
+                    secondary: "#2E3192",
+                    accent: "#FF6A00",
+                    hover: "#FF8533",
+                },
                 primary: {
                     DEFAULT: "hsl(var(--primary))",
                     foreground: "hsl(var(--primary-foreground))",
@@ -48,7 +59,6 @@ const config = {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
-                // App-specific semantic colors
                 success: {
                     DEFAULT: "hsl(var(--success))",
                     foreground: "hsl(var(--success-foreground))",

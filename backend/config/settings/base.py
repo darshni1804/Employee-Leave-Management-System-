@@ -49,9 +49,12 @@ LOCAL_APPS = [
     "apps.accounts",
     "apps.leaves",
     "apps.dashboard",
+    "apps.notifications",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+DEFAULT_FROM_EMAIL = "noreply@technodha-leavemate.local"
 
 # ─────────────────────────────────────────────────────────────────
 # Middleware

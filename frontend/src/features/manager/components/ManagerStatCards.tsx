@@ -1,19 +1,17 @@
 /**
- * ManagerStatCards — stat cards display for the Manager Dashboard.
+ * ManagerStatCards — stat cards for Manager Dashboard matching Reference Image 3.
  *
- * Cards:
- * - Pending Requests (amber)
- * - Approved Today (emerald)
- * - Total Employees (indigo)
- * - Approved Total (blue)
- * - Rejected Total (rose)
- * - Cancelled Total (slate)
+ * Card Spec:
+ * - White background, 18px radius, #E5E7EB border, soft shadow, 24px padding
+ * - Card title: Inter font
+ * - Large number: JetBrains Mono font
+ * - Icon: inside small rounded square on top right
  */
 import {
-  Users,
   Clock,
-  CalendarCheck,
   CheckCircle2,
+  Users,
+  CalendarCheck,
   XCircle,
   Ban,
 } from "lucide-react";
@@ -28,7 +26,7 @@ interface ManagerStatCardsProps {
 export function ManagerStatCards({ stats, isLoading }: ManagerStatCardsProps) {
   if (isLoading || !stats) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {Array.from({ length: 6 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -41,73 +39,71 @@ export function ManagerStatCards({ stats, isLoading }: ManagerStatCardsProps) {
       label: "Pending Requests",
       value: stats.pending_requests,
       icon: Clock,
-      iconBg: "bg-amber-50 dark:bg-amber-950/30",
-      iconColor: "text-amber-600 dark:text-amber-400",
+      iconBg: "bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]/60",
       subLabel: "Awaiting approval decision",
     },
     {
-      label: "Approved Today",
+      label: "Approved Leaves",
       value: stats.approved_today,
-      icon: CalendarCheck,
-      iconBg: "bg-emerald-50 dark:bg-emerald-950/30",
-      iconColor: "text-emerald-600 dark:text-emerald-400",
-      subLabel: "Leaves approved today",
+      icon: CheckCircle2,
+      iconBg: "bg-[#F0FDF4] text-[#16A34A] border border-[#BBF7D0]/60",
+      subLabel: "Leaves approved this month",
     },
     {
       label: "Total Employees",
       value: stats.total_employees,
       icon: Users,
-      iconBg: "bg-indigo-50 dark:bg-indigo-950/30",
-      iconColor: "text-indigo-600 dark:text-indigo-400",
+      iconBg: "bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]/60",
       subLabel: "Active team members",
     },
     {
       label: "Approved Total",
       value: stats.approved_total,
-      icon: CheckCircle2,
-      iconBg: "bg-blue-50 dark:bg-blue-950/30",
-      iconColor: "text-blue-600 dark:text-blue-400",
-      subLabel: "Total approved all-time",
+      icon: CalendarCheck,
+      iconBg: "bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]/60",
+      subLabel: "Total approved requests",
     },
     {
       label: "Rejected Total",
       value: stats.rejected_total,
       icon: XCircle,
-      iconBg: "bg-rose-50 dark:bg-rose-950/30",
-      iconColor: "text-rose-600 dark:text-rose-400",
-      subLabel: "Total rejected all-time",
+      iconBg: "bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA]/60",
+      subLabel: "Total rejected requests",
     },
     {
       label: "Cancelled Total",
       value: stats.cancelled_total,
       icon: Ban,
-      iconBg: "bg-slate-100 dark:bg-slate-800/40",
-      iconColor: "text-slate-600 dark:text-slate-400",
+      iconBg: "bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]",
       subLabel: "Cancelled by employee",
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
           <div
             key={card.label}
-            className="rounded-xl border bg-card p-5 shadow-sm hover:shadow-md transition-shadow"
+            className="rounded-[18px] border border-[#E5E7EB] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-180"
           >
-            <div className="flex items-start justify-between mb-3">
-              <p className="text-sm font-medium text-muted-foreground">
+            <div className="flex items-start justify-between mb-4">
+              <p className="font-sans text-sm font-semibold text-[#475569]">
                 {card.label}
               </p>
               <div
-                className={`flex h-9 w-9 items-center justify-center rounded-lg ${card.iconBg}`}
+                className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg}`}
               >
-                <Icon className={`h-5 w-5 ${card.iconColor}`} />
+                <Icon className="h-5 w-5" />
               </div>
             </div>
-            <p className="text-3xl font-bold tracking-tight">{card.value}</p>
-            <p className="text-xs text-muted-foreground mt-1">{card.subLabel}</p>
+            <p className="font-mono text-3xl md:text-4xl font-bold text-[#111827] tracking-tight">
+              {card.value}
+            </p>
+            <p className="font-sans text-xs text-[#64748B] mt-1.5">
+              {card.subLabel}
+            </p>
           </div>
         );
       })}
