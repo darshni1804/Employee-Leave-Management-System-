@@ -1,0 +1,410 @@
+{
+	"info": {
+		"_postman_id": "elms-api-collection-v1",
+		"name": "Employee Leave Management System (ELMS) API",
+		"description": "Complete Postman Collection for ELMS API including Authentication, Employee Leave Applications, and Manager Approval Workflows.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Login (Employee)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email_or_employee_id\": \"employee@example.com\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "Authenticate user with email or employee_id and password. Returns JWT access and refresh tokens."
+					},
+					"response": []
+				},
+				{
+					"name": "Login (Manager)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email_or_employee_id\": \"manager@example.com\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "Authenticate manager account."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User (/me)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/me/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me",
+								""
+							]
+						},
+						"description": "Fetch current authenticated user profile."
+					},
+					"response": []
+				},
+				{
+					"name": "Token Refresh",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/token/refresh/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"token",
+								"refresh",
+								""
+							]
+						},
+						"description": "Obtain a fresh access token using a valid refresh token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Employee Module",
+			"item": [
+				{
+					"name": "List My Leaves",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/leaves/?status=PENDING&page=1&page_size=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaves",
+								""
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PENDING"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
+						},
+						"description": "List authenticated employee's own leave requests with filtering and pagination."
+					},
+					"response": []
+				},
+				{
+					"name": "Apply for Leave",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"start_date\": \"2026-08-10\",\n  \"end_date\": \"2026-08-14\",\n  \"reason\": \"Summer vacation with family\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/leaves/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaves",
+								""
+							]
+						},
+						"description": "Apply for leave. Validates annual limit (20 days), start date >= today, end date >= start date, and overlap rules."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Leave Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/leaves/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaves",
+								"1",
+								""
+							]
+						},
+						"description": "Fetch details of a single leave request owned by the user."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Pending Leave",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/leaves/1/cancel/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"leaves",
+								"1",
+								"cancel",
+								""
+							]
+						},
+						"description": "Cancel a PENDING leave request owned by the employee."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Manager Module",
+			"item": [
+				{
+					"name": "List All Leave Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{manager_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/manager/leaves/?status=PENDING&search=John&page=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"manager",
+								"leaves",
+								""
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PENDING"
+								},
+								{
+									"key": "search",
+									"value": "John"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						},
+						"description": "List all leave requests across the organisation for manager review. Restricted to MANAGER & ADMIN roles."
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Leave Request",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{manager_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"comment\": \"Approved. Enjoy your time off!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/manager/leaves/1/approve/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"manager",
+								"leaves",
+								"1",
+								"approve",
+								""
+							]
+						},
+						"description": "Approve a PENDING leave request. Sets status=APPROVED, reviewed_by=manager, reviewed_at=now."
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Leave Request",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{manager_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"comment\": \"Critical project release scheduled during this period.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/manager/leaves/2/reject/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"manager",
+								"leaves",
+								"2",
+								"reject",
+								""
+							]
+						},
+						"description": "Reject a PENDING leave request. Sets status=REJECTED, reviewed_by=manager, reviewed_at=now."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Manager Statistics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{manager_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/manager/statistics/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"manager",
+								"statistics",
+								""
+							]
+						},
+						"description": "Get aggregate employee leave statistics (total_employees, pending_requests, approved_today, approved_total, rejected_total, cancelled_total)."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "manager_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

@@ -198,9 +198,15 @@ CORS_ALLOW_CREDENTIALS = True
 # ─────────────────────────────────────────────────────────────────
 SPECTACULAR_SETTINGS = {
     "TITLE": "Employee Leave Management System API",
-    "DESCRIPTION": "REST API for managing employee leave requests, approvals, and reporting.",
+    "DESCRIPTION": "Production-ready REST API for Employee Leave Management System (ELMS), supporting Authentication, Employee Leave Applications, and Manager Approval Workflows.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,
     "SCHEMA_PATH_PREFIX": r"/api/v1/",
+    "SECURITY": [{"BearerAuth": []}],
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
 }

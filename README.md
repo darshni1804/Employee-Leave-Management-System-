@@ -1,185 +1,266 @@
 # Employee Leave Management System (ELMS)
 
-A production-ready full-stack application for managing employee leave requests.
+[![Django](https://img.shields.io/badge/Django-5.1-092E20?style=for-the-badge&logo=django)](https://www.djangoproject.com/)
+[![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker)](https://www.docker.com/)
+
+A production-ready, full-stack **Employee Leave Management System (ELMS)** built with **Django REST Framework (DRF)** and **React 19 + TypeScript + Tailwind CSS**.
+
+The system enables employees to submit leave requests and track their leave history, while allowing managers and administrators to review, approve, or reject leave requests with real-time organizational statistics.
 
 ---
 
-## Tech Stack
+## 🌟 Key Features
 
-| Layer     | Technology                                                   |
-|-----------|--------------------------------------------------------------|
-| Backend   | Django 5, Django REST Framework, PostgreSQL, Simple JWT      |
-| Frontend  | React 19, Vite, Tailwind CSS, shadcn/ui, React Router        |
-| DevOps    | Docker, Docker Compose, Gunicorn                             |
+### 🔐 Authentication & Access Control
+- **Role-Based Access Control (RBAC):** `EMPLOYEE`, `MANAGER`, `ADMIN` roles.
+- **JWT Authentication:** SimpleJWT tokens (Access & Refresh) with automatic frontend rotation and token blacklist on logout.
+- **Dual Identifier Login:** Sign in using either **Email Address** or **Employee ID**.
+- **Role Guards:** Strictly enforced object-level ownership and endpoint access controls (Employees get `403 Forbidden` on manager endpoints).
+
+### 👨‍💼 Employee Module
+- **Employee Dashboard:** Real-time metrics for Remaining Annual Leave (out of 20 days), Approved Leaves, Pending Leaves, and Recent Activity.
+- **Apply for Leave:** React Hook Form + Zod validation enforcing:
+  - Max 20 approved leave days per calendar year.
+  - No past start dates.
+  - End date on or after start date.
+  - No overlap with existing approved leave requests.
+- **Leave History:** Responsive table with status badges (`PENDING`, `APPROVED`, `REJECTED`, `CANCELLED`), reason search, status filtering, date range pickers, and pagination.
+- **Cancel Pending Leave:** Employees can cancel `PENDING` leave requests with confirmation modal.
+
+### 👔 Manager Module
+- **Manager Dashboard:** Real-time organizational metrics (Total Employees, Pending Requests, Approved Today, Approved Total, Rejected Total, Cancelled Total).
+- **Manage Requests Table:** Review all employee requests with columns for Employee Name, Email, Employee ID, Department, Dates, Duration, Reason, Status, and Applied On date.
+- **Approve / Reject Workflows:** One-click approval and rejection with optional reviewer comments (allowed strictly for `PENDING` requests).
+- **Search & Filters:** Full-text search across employee name, ID, email, or reason, status filter dropdown, date range filtering, and pagination.
 
 ---
 
-## Project Structure
+## 🛠️ Tech Stack
+
+### Backend
+- **Framework:** Python 3.11+ / Django 5.1 / Django REST Framework 3.15
+- **Authentication:** `rest_framework_simplejwt` (JWT)
+- **Database:** PostgreSQL 16
+- **Filtering & Search:** `django-filter`, DRF `SearchFilter`, DRF `OrderingFilter`
+- **Documentation:** `drf-spectacular` (OpenAPI 3.0 / Swagger UI & ReDoc)
+
+### Frontend
+- **Framework:** React 19 + Vite 5 + TypeScript 5
+- **Styling:** Vanilla Tailwind CSS v3 + Tailwind Animate
+- **Form Handling:** React Hook Form + Zod Schema Validation
+- **UI Primitives:** Radix UI Dialog + Lucide Icons + Sonner Toasts
+- **HTTP Client:** Axios with JWT request/response interceptors & token refresh queue
+
+---
+
+## 📐 Project Architecture & Layering
+
+The project adheres to a strict **Service Layer Pattern**:
+
+```
+                               ┌───────────────────────────┐
+                               │     React 19 Frontend     │
+                               └─────────────┬─────────────┘
+                                             │ HTTP (JSON + JWT)
+                                             ▼
+                               ┌───────────────────────────┐
+                               │  DRF ViewSets & Routers   │ (HTTP handling & validation)
+                               └─────────────┬─────────────┘
+                                             │ Delegates
+                                             ▼
+                               ┌───────────────────────────┐
+                               │   Services Layer (py)     │ (100% Business Logic)
+                               └─────────────┬─────────────┘
+                                             │ ORM Queries
+                                             ▼
+                               ┌───────────────────────────┐
+                               │    PostgreSQL Database    │
+                               └───────────────────────────┘
+```
+
+> **Architecture Principle:** Views only handle HTTP request/response parsing and status codes. All business logic, validations, rules, and computations live exclusively inside `services.py`.
+
+---
+
+## 📁 Directory Structure
 
 ```
 Employee Leave Management System/
-├── backend/               # Django 5 REST API
-├── frontend/              # React 19 + Vite SPA
-├── docker-compose.yml     # Full-stack orchestration
+├── backend/
+│   ├── apps/
+│   │   ├── accounts/          # User model, Auth serializers, views, permissions
+│   │   ├── leaves/            # Leave models, services, serializers, views, tests
+│   │   └── dashboard/         # Dashboard statistics services & APIs
+│   ├── config/                # Settings (base, development, production), URLs, WSGI/ASGI
+│   ├── core/                  # Exceptions, Pagination, Base Permissions
+│   ├── Dockerfile
+│   ├── manage.py
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── api/               # Axios client & endpoints configuration
+│   │   ├── components/        # Shared UI (StatusBadge, Skeleton, ConfirmDialog, Pagination)
+│   │   ├── features/          # Feature modules (auth, leaves, manager)
+│   │   ├── layouts/           # Role-based layouts (EmployeeLayout, ManagerLayout, AdminLayout)
+│   │   ├── pages/             # Page components (LoginPage, DashboardPage, LeavesPage, ManagerDashboardPage)
+│   │   ├── router/            # React Router 7 config & ProtectedRoute guards
+│   │   └── types/             # Domain TypeScript interface definitions
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── tailwind.config.ts
+│   └── vite.config.ts
+├── docs/
+│   ├── postman_collection.json # Complete Postman API collection
+│   ├── database_schema.md      # PostgreSQL Schema & ER Diagram
+│   └── screenshots/            # UI screenshots guide
+├── docker-compose.yml
 └── README.md
 ```
 
 ---
 
-## Prerequisites
+## ⚡ Quick Start & Installation
 
-- Python 3.12+
-- Node.js 20+
-- PostgreSQL 16+ (or Docker)
-- pip, npm / pnpm
+### Prerequisites
+- **Python:** 3.11 or higher
+- **Node.js:** 18 or higher (npm 9+)
+- **PostgreSQL:** 16 (or SQLite / Docker)
 
 ---
 
-## Quick Start (Local Development)
+### Option A: Local Development Setup
 
-### 1. Clone & Enter Project
+#### 1. Database & Environment Setup
+Ensure PostgreSQL is running, then set up `.env` files:
 
-```bash
-cd "Employee Leave Management System"
+```powershell
+# Copy backend environment template
+cp backend/.env.example backend/.env
+
+# Copy frontend environment template
+cp frontend/.env.example frontend/.env
 ```
 
----
-
-### 2. Backend Setup
-
-```bash
+#### 2. Backend Setup
+```powershell
 cd backend
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+venv\Scripts\activate        # On Windows
+# source venv/bin/activate    # On Linux/macOS
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your local PostgreSQL credentials
+# Run migrations
+python manage.py migrate
 
-# Run migrations using the project virtual environment
-.\venv\Scripts\python.exe manage.py migrate
+# Seed initial test users (Employee, Manager, Admin)
+python manage.py seed_users
 
-# Seed test users (Employee & Manager)
-.\venv\Scripts\python.exe manage.py seed_users
-
-# Create superuser (optional)
-.\venv\Scripts\python.exe manage.py createsuperuser
-
-# Start development server
-.\venv\Scripts\python.exe manage.py runserver 8000
+# Start Django backend server
+python manage.py runserver 8000
 ```
+> 🌐 Backend API: `http://127.0.0.1:8000/api/v1/`  
+> 📑 Swagger UI: `http://127.0.0.1:8000/api/schema/swagger-ui/`
 
-Backend API available at: `http://localhost:8000/api/v1/`  
-API Docs (Swagger): `http://localhost:8000/api/schema/swagger-ui/`  
-API Docs (Redoc): `http://localhost:8000/api/schema/redoc/`
-
----
-
-### 3. Frontend Setup
-
-```bash
+#### 3. Frontend Setup
+Open a new terminal window:
+```powershell
 cd frontend
 
-# Install dependencies
+# Install Node dependencies
 npm install
 
-# Configure environment
-cp .env.example .env.local
-# Edit .env.local with your API URL
-
-# Start development server
+# Start Vite dev server
 npm run dev
 ```
-
-Frontend available at: `http://localhost:5173`
+> 🌐 Frontend Application: `http://localhost:5173/`
 
 ---
 
-## Docker (Full Stack)
+### Option B: Docker Compose Setup (Single Command)
 
-```bash
-# Copy environment files
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
+To run the full stack (Frontend + Backend + PostgreSQL Database) in Docker:
 
-# Build and start all services
+```powershell
 docker-compose up --build
+```
+- **Frontend App:** `http://localhost:5173`
+- **Backend API:** `http://localhost:8000/api/v1/`
+- **Swagger Docs:** `http://localhost:8000/api/schema/swagger-ui/`
 
-# Run in background
-docker-compose up -d --build
+---
 
-# Stop services
-docker-compose down
+## 🔑 Default Credentials
 
-# Stop and remove volumes
-docker-compose down -v
+After seeding the database (`python manage.py seed_users`), use any of the following accounts:
+
+| Role | Email / Identifier | Password | Access Level |
+|---|---|---|---|
+| **Employee** | `employee@example.com` / `EMP001` | `Password123!` | Employee Module (Apply, History, Cancel) |
+| **Manager** | `manager@example.com` / `MGR001` | `Password123!` | Manager Module (Approve, Reject, Stats) |
+| **Admin** | `admin@example.com` / `ADM001` | `Password123!` | Full Admin Panel & System Control |
+
+---
+
+## 🧪 Running Tests & Quality Verification
+
+### Backend Tests (Django Test Suite)
+```powershell
+cd backend
+python manage.py test
+```
+- **Output:** 34 tests passing (0 failures, 0 errors)
+
+### Django System Check
+```powershell
+cd backend
+python manage.py check
 ```
 
-Services:
-- **Frontend**: `http://localhost:5173`
-- **Backend API**: `http://localhost:8000/api/v1/`
-- **PostgreSQL**: `localhost:5432`
+### Frontend Type Check (TypeScript)
+```powershell
+cd frontend
+npm run type-check
+```
+
+### Frontend Production Build
+```powershell
+cd frontend
+npm run build
+```
 
 ---
 
-## Environment Variables
+## 📄 API Documentation & Postman Collection
 
-### Backend (`backend/.env`)
-
-| Variable                 | Description                        | Default               |
-|--------------------------|------------------------------------|-----------------------|
-| `SECRET_KEY`             | Django secret key                  | —                     |
-| `DEBUG`                  | Debug mode                         | `True`                |
-| `ALLOWED_HOSTS`          | Comma-separated allowed hosts      | `localhost,127.0.0.1` |
-| `DB_NAME`                | PostgreSQL database name           | `elms_db`             |
-| `DB_USER`                | PostgreSQL user                    | `elms_user`           |
-| `DB_PASSWORD`            | PostgreSQL password                | —                     |
-| `DB_HOST`                | PostgreSQL host                    | `localhost`           |
-| `DB_PORT`                | PostgreSQL port                    | `5432`                |
-| `CORS_ALLOWED_ORIGINS`   | Allowed frontend origins           | `http://localhost:5173` |
-| `JWT_ACCESS_LIFETIME`    | JWT access token lifetime (minutes)| `60`                  |
-| `JWT_REFRESH_LIFETIME`   | JWT refresh token lifetime (days)  | `7`                   |
-
-### Frontend (`frontend/.env.local`)
-
-| Variable               | Description          | Default                          |
-|------------------------|----------------------|----------------------------------|
-| `VITE_API_BASE_URL`    | Backend API base URL | `http://localhost:8000/api/v1`   |
+- **Interactive Swagger UI:** `http://127.0.0.1:8000/api/schema/swagger-ui/`
+- **ReDoc Documentation:** `http://127.0.0.1:8000/api/schema/redoc/`
+- **Postman Collection File:** [docs/postman_collection.json](docs/postman_collection.json)
+- **Database Schema Documentation:** [docs/database_schema.md](docs/database_schema.md)
 
 ---
 
-## API Endpoints (Planned)
+## 📸 Screenshots
 
-| Method | Endpoint                        | Description              | Auth Required |
-|--------|---------------------------------|--------------------------|---------------|
-| POST   | `/api/v1/auth/register/`        | Register new user        | No            |
-| POST   | `/api/v1/auth/login/`           | Obtain JWT tokens        | No            |
-| POST   | `/api/v1/auth/token/refresh/`   | Refresh access token     | No            |
-| GET    | `/api/v1/auth/me/`              | Get current user         | Yes           |
-| GET    | `/api/v1/leaves/`               | List leave requests      | Yes           |
-| POST   | `/api/v1/leaves/`               | Submit leave request     | Yes           |
-| GET    | `/api/v1/leaves/{id}/`          | Get leave detail         | Yes           |
-| PATCH  | `/api/v1/leaves/{id}/approve/`  | Approve leave (Manager)  | Yes (Manager) |
-| PATCH  | `/api/v1/leaves/{id}/reject/`   | Reject leave (Manager)   | Yes (Manager) |
-| GET    | `/api/v1/dashboard/stats/`      | Get dashboard statistics | Yes           |
+See [docs/screenshots/README.md](docs/screenshots/README.md) for details on application screens:
+1. **Login Page:** Authentication & quick-fill role picker.
+2. **Employee Dashboard:** Live leave statistics & recent activity.
+3. **Apply Leave:** Interactive form with client/server validation.
+4. **Leave History:** Filterable, paginated table with cancel action.
+5. **Manager Dashboard:** Team leave metrics & approval queue.
+6. **Manager Review:** Approval and rejection modal workflows.
 
 ---
 
-## User Roles
+## 🚀 Future Improvements
 
-| Role       | Permissions                                      |
-|------------|--------------------------------------------------|
-| `EMPLOYEE` | Submit, view own leave requests                  |
-| `MANAGER`  | View team leaves, approve/reject requests        |
-| `ADMIN`    | Full access — manage users, leave types, reports |
-
----
-
-## License
-
-MIT
+- **Email Notifications:** Send automated emails to employees when leave requests are approved or rejected.
+- **Export Reports:** CSV/PDF export of team leave history for HR payroll integration.
+- **Calendar View:** Interactive team calendar showing upcoming approved leaves across departments.
