@@ -4,8 +4,9 @@
  * Role-Based Route Hierarchy:
  *  /                     → Redirect to /dashboard
  *  /login                → AuthLayout > LoginPage (Public)
- *  /dashboard, /leaves   → Protected (All authenticated) > RoleBasedLayout (Employee/Manager/Admin)
- *  /approvals, /team/*   → Protected (Manager, Admin only) > ManagerLayout
+ *  /dashboard            → Protected (All authenticated) > RoleBasedDashboardPage
+ *  /leaves               → Protected (All authenticated) > LeavesPage (Employee leaves)
+ *  /approvals, /team/*   → Protected (Manager, Admin only) > ManagerDashboardPage
  *  /users, /reports      → Protected (Admin only) > AdminLayout
  *  /unauthorized         → UnauthorizedPage
  *  *                     → NotFoundPage
@@ -22,6 +23,7 @@ import { useAuth } from "@/features/auth/store/AuthContext";
 
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
+import { ManagerDashboardPage } from "@/pages/manager/ManagerDashboardPage";
 import { LeavesPage } from "@/pages/leaves/LeavesPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { UnauthorizedPage } from "@/pages/UnauthorizedPage";
@@ -39,6 +41,19 @@ function RoleBasedLayout() {
     return <ManagerLayout />;
   }
   return <EmployeeLayout />;
+}
+
+/**
+ * Dynamic dashboard component that renders ManagerDashboardPage for MANAGER/ADMIN
+ * and DashboardPage for EMPLOYEE.
+ */
+function RoleBasedDashboardPage() {
+  const { user } = useAuth();
+
+  if (user?.role === "MANAGER" || user?.role === "ADMIN") {
+    return <ManagerDashboardPage />;
+  }
+  return <DashboardPage />;
 }
 
 export const router = createBrowserRouter([
@@ -69,10 +84,10 @@ export const router = createBrowserRouter([
       {
         element: <RoleBasedLayout />,
         children: [
-          { path: "/dashboard", element: <DashboardPage /> },
+          { path: "/dashboard", element: <RoleBasedDashboardPage /> },
           { path: "/leaves", element: <LeavesPage /> },
           { path: "/balances", element: <LeavesPage /> },
-          { path: "/profile", element: <DashboardPage /> },
+          { path: "/profile", element: <RoleBasedDashboardPage /> },
         ],
       },
     ],
@@ -87,8 +102,8 @@ export const router = createBrowserRouter([
       {
         element: <ManagerLayout />,
         children: [
-          { path: "/approvals", element: <LeavesPage /> },
-          { path: "/team/leaves", element: <LeavesPage /> },
+          { path: "/approvals", element: <ManagerDashboardPage /> },
+          { path: "/team/leaves", element: <ManagerDashboardPage /> },
         ],
       },
     ],
@@ -103,10 +118,10 @@ export const router = createBrowserRouter([
       {
         element: <AdminLayout />,
         children: [
-          { path: "/users", element: <DashboardPage /> },
+          { path: "/users", element: <ManagerDashboardPage /> },
           { path: "/leave-types", element: <LeavesPage /> },
-          { path: "/reports", element: <DashboardPage /> },
-          { path: "/settings", element: <DashboardPage /> },
+          { path: "/reports", element: <ManagerDashboardPage /> },
+          { path: "/settings", element: <ManagerDashboardPage /> },
         ],
       },
     ],

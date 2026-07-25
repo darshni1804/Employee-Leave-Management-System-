@@ -23,6 +23,7 @@ api_auth_patterns = [
 api_v1_patterns = [
     path("auth/", include("apps.accounts.urls", namespace="accounts")),
     path("leaves/", include("apps.leaves.urls", namespace="leaves")),
+    path("manager/", include("apps.leaves.manager_urls", namespace="manager")),
     path("dashboard/", include("apps.dashboard.urls", namespace="dashboard")),
 ]
 

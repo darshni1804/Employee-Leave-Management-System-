@@ -253,70 +253,159 @@ class LeavesService:
         return max(remaining, 0)
 
     # ──────────────────────────────────────────
-    # Manager-Facing Methods (Phase 3 scope)
+    # Manager-Facing Methods (Phase 4 scope)
     # ──────────────────────────────────────────
 
     @staticmethod
-    def submit_leave_request(employee: "User", validated_data: dict) -> "LeaveRequest":
+    def list_all_requests() -> "QuerySet[LeaveRequest]":
         """
-        Alias kept for backward-compatibility. Delegates to submit_leave().
+        Return queryset of all leave requests in the system for manager review.
+
+        Optimised with select_related for employee and reviewed_by.
+        Ordered by most-recent created_at first.
         """
-        return LeavesService.submit_leave(employee, validated_data)
+        from apps.leaves.models import LeaveRequest
+
+        return (
+            LeaveRequest.objects.all()
+            .select_related("employee", "reviewed_by", "leave_type")
+            .order_by("-created_at")
+        )
 
     @staticmethod
-    def approve_leave_request(request_id: int, reviewer: "User", comment: str = "") -> "LeaveRequest":
+    def approve_leave(request_id: int, reviewer: "User", comment: str = "") -> "LeaveRequest":
         """
-        Approve a leave request (Phase 3).
+        Approve a pending leave request.
 
-        TODO: Implement logic including:
-        - Validate status is PENDING
-        - Validate reviewer has MANAGER or ADMIN role
-        - Set status to APPROVED, record reviewer + timestamp
-        - Send notification to employee
+        Rules:
+            Only PENDING leave requests can be approved.
+
+        Updates:
+            - status = APPROVED
+            - reviewed_by = reviewer
+            - reviewed_at = current timestamp
+            - reviewer_comment = comment (if provided)
         """
-        raise NotImplementedError("Implement approve_leave_request() in Phase 3.")
+        from django.utils import timezone
+        from apps.leaves.models import LeaveRequest, LeaveStatus
+
+        try:
+            leave_request = LeaveRequest.objects.select_related("employee", "reviewed_by").get(pk=request_id)
+        except LeaveRequest.DoesNotExist:
+            raise ServiceError(
+                "Leave request not found.",
+                status_code=404,
+            )
+
+        if leave_request.status != LeaveStatus.PENDING:
+            raise ServiceError(
+                f"Only PENDING leave requests can be approved. "
+                f"This request is currently '{leave_request.get_status_display()}'.",
+                status_code=400,
+            )
+
+        leave_request.status = LeaveStatus.APPROVED
+        leave_request.reviewed_by = reviewer
+        leave_request.reviewed_at = timezone.now()
+        if comment:
+            leave_request.reviewer_comment = comment
+        leave_request.save(update_fields=["status", "reviewed_by", "reviewed_at", "reviewer_comment", "updated_at"])
+
+        logger.info(
+            "Leave request #%s approved by manager %s.",
+            leave_request.pk,
+            reviewer.pk,
+        )
+        return leave_request
 
     @staticmethod
-    def reject_leave_request(request_id: int, reviewer: "User", comment: str = "") -> "LeaveRequest":
+    def reject_leave(request_id: int, reviewer: "User", comment: str = "") -> "LeaveRequest":
         """
-        Reject a leave request (Phase 3).
+        Reject a pending leave request.
 
-        TODO: Implement rejection logic.
+        Rules:
+            Only PENDING leave requests can be rejected.
+
+        Updates:
+            - status = REJECTED
+            - reviewed_by = reviewer
+            - reviewed_at = current timestamp
+            - reviewer_comment = comment (if provided)
         """
-        raise NotImplementedError("Implement reject_leave_request() in Phase 3.")
+        from django.utils import timezone
+        from apps.leaves.models import LeaveRequest, LeaveStatus
+
+        try:
+            leave_request = LeaveRequest.objects.select_related("employee", "reviewed_by").get(pk=request_id)
+        except LeaveRequest.DoesNotExist:
+            raise ServiceError(
+                "Leave request not found.",
+                status_code=404,
+            )
+
+        if leave_request.status != LeaveStatus.PENDING:
+            raise ServiceError(
+                f"Only PENDING leave requests can be rejected. "
+                f"This request is currently '{leave_request.get_status_display()}'.",
+                status_code=400,
+            )
+
+        leave_request.status = LeaveStatus.REJECTED
+        leave_request.reviewed_by = reviewer
+        leave_request.reviewed_at = timezone.now()
+        if comment:
+            leave_request.reviewer_comment = comment
+        leave_request.save(update_fields=["status", "reviewed_by", "reviewed_at", "reviewer_comment", "updated_at"])
+
+        logger.info(
+            "Leave request #%s rejected by manager %s.",
+            leave_request.pk,
+            reviewer.pk,
+        )
+        return leave_request
 
     @staticmethod
-    def get_employee_balances(employee: "User", year: int) -> "list[LeaveBalance]":
+    def manager_statistics() -> dict:
         """
-        Return all leave balances for an employee in a given year (Phase 3).
+        Compute and return aggregate leave statistics for managers.
 
-        TODO: Implement queryset.
+        Returns:
+            dict containing:
+                - total_employees
+                - pending_requests
+                - approved_today
+                - approved_total
+                - rejected_total
+                - cancelled_total
         """
-        raise NotImplementedError("Implement get_employee_balances() in Phase 3.")
+        from django.utils import timezone
+        from apps.accounts.models import User, UserRole
+        from apps.leaves.models import LeaveRequest, LeaveStatus
 
-    @staticmethod
-    def allocate_leave_balance(
-        employee: "User",
-        leave_type: "LeaveType",
-        year: int,
-        days: float,
-    ) -> "LeaveBalance":
-        """
-        Allocate or update leave balance for an employee (Phase 3).
+        today = timezone.now().date()
 
-        TODO: Implement upsert logic.
-        """
-        raise NotImplementedError("Implement allocate_leave_balance() in Phase 3.")
+        total_employees = User.objects.filter(is_active=True).count()
+        pending_requests = LeaveRequest.objects.filter(status=LeaveStatus.PENDING).count()
+        approved_today = LeaveRequest.objects.filter(
+            status=LeaveStatus.APPROVED,
+            reviewed_at__date=today,
+        ).count()
+        approved_total = LeaveRequest.objects.filter(status=LeaveStatus.APPROVED).count()
+        rejected_total = LeaveRequest.objects.filter(status=LeaveStatus.REJECTED).count()
+        cancelled_total = LeaveRequest.objects.filter(status=LeaveStatus.CANCELLED).count()
 
-    @staticmethod
-    def calculate_working_days(start_date: date, end_date: date) -> int:
-        """
-        Calculate the number of working days between two dates, excluding
-        weekends and public holidays (Phase 3).
+        return {
+            "total_employees": total_employees,
+            "pending_requests": pending_requests,
+            "approved_today": approved_today,
+            "approved_total": approved_total,
+            "rejected_total": rejected_total,
+            "cancelled_total": cancelled_total,
+        }
 
-        TODO: Implement weekend/holiday exclusion.
-        """
-        raise NotImplementedError("Implement calculate_working_days() in Phase 3.")
-
-    # Alias kept from original stub
+    # Aliases for backward compatibility
+    submit_leave_request = submit_leave
+    approve_leave_request = approve_leave
+    reject_leave_request = reject_leave
     cancel_leave_request = cancel_leave
+

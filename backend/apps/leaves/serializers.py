@@ -242,3 +242,70 @@ class LeaveBalanceSerializer(serializers.ModelSerializer):
             "remaining_days",
         ]
         read_only_fields = ["id", "used_days", "remaining_days"]
+
+
+# ──────────────────────────────────────────────────────────
+# Phase 4 — Manager Serializers
+# ──────────────────────────────────────────────────────────
+
+class ManagerLeaveSerializer(serializers.ModelSerializer):
+    """
+    Detailed read serializer for manager leave requests.
+    Includes full nested employee, leave_type, and reviewer objects.
+    """
+
+    employee = UserSerializer(read_only=True)
+    leave_type = LeaveTypeSerializer(read_only=True)
+    reviewed_by = UserSerializer(read_only=True)
+    status_display = serializers.CharField(source="get_status_display", read_only=True)
+    duration_days = serializers.IntegerField(source="total_days", read_only=True)
+
+    class Meta:
+        model = LeaveRequest
+        fields = [
+            "id",
+            "employee",
+            "leave_type",
+            "start_date",
+            "end_date",
+            "total_days",
+            "duration_days",
+            "reason",
+            "status",
+            "status_display",
+            "reviewed_by",
+            "reviewer_comment",
+            "reviewed_at",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = fields
+
+
+class ManagerStatisticsSerializer(serializers.Serializer):
+    """
+    Output serializer for the /api/v1/manager/statistics/ endpoint.
+    """
+
+    total_employees = serializers.IntegerField()
+    pending_requests = serializers.IntegerField()
+    approved_today = serializers.IntegerField()
+    approved_total = serializers.IntegerField()
+    rejected_total = serializers.IntegerField()
+    cancelled_total = serializers.IntegerField()
+
+
+class ApproveRejectSerializer(serializers.Serializer):
+    """
+    Input serializer for manager approve/reject actions.
+    Accepts an optional comment field.
+    """
+
+    comment = serializers.CharField(
+        allow_blank=True,
+        required=False,
+        default="",
+        max_length=1000,
+        help_text="Optional comment or note from manager.",
+    )
+

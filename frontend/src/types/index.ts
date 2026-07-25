@@ -164,3 +164,15 @@ export interface EmployeeLeaveStats {
   cancelled: number;
   rejected: number;
 }
+
+// ─────────────────────────────────────────
+// Manager statistics (Phase 4 API payload)
+// ─────────────────────────────────────────
+export interface ManagerStatistics {
+  total_employees: number;
+  pending_requests: number;
+  approved_today: number;
+  approved_total: number;
+  rejected_total: number;
+  cancelled_total: number;
+}

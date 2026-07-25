@@ -50,6 +50,23 @@ export const LEAVE_ENDPOINTS = {
 } as const;
 
 // ─────────────────────────────────────────
+// Leaves — Manager endpoints (Phase 4)
+// Restricted to MANAGER and ADMIN roles
+// ─────────────────────────────────────────
+export const MANAGER_LEAVE_ENDPOINTS = {
+  /** GET list — /api/v1/manager/leaves/ */
+  LIST: "/manager/leaves/",
+  /** GET detail — /api/v1/manager/leaves/{id}/ */
+  DETAIL: (id: number) => `/manager/leaves/${id}/`,
+  /** PATCH approve — /api/v1/manager/leaves/{id}/approve/ */
+  APPROVE: (id: number) => `/manager/leaves/${id}/approve/`,
+  /** PATCH reject — /api/v1/manager/leaves/{id}/reject/ */
+  REJECT: (id: number) => `/manager/leaves/${id}/reject/`,
+  /** GET statistics — /api/v1/manager/statistics/ */
+  STATISTICS: "/manager/statistics/",
+} as const;
+
+// ─────────────────────────────────────────
 // Dashboard
 // ─────────────────────────────────────────
 export const DASHBOARD_ENDPOINTS = {
