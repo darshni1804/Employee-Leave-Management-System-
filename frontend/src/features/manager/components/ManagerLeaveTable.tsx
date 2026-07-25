@@ -12,25 +12,23 @@
  * - Applied On
  * - Actions (Approve & Reject buttons visible ONLY for PENDING status)
  */
-import { Check, X, Calendar } from "lucide-react";
+import { Calendar, Eye } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { formatDate } from "@/lib/utils";
 import type { LeaveRequest } from "@/types";
 
 interface ManagerLeaveTableProps {
   leaves: LeaveRequest[];
-  onApproveClick: (leave: LeaveRequest) => void;
-  onRejectClick: (leave: LeaveRequest) => void;
+  onViewDetails: (leave: LeaveRequest) => void;
 }
 
 export function ManagerLeaveTable({
   leaves,
-  onApproveClick,
-  onRejectClick,
+  onViewDetails,
 }: ManagerLeaveTableProps) {
   if (leaves.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border bg-card">
+      <div className="flex flex-col items-center justify-center py-10 text-center rounded-xl border bg-card">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-4">
           <Calendar className="h-7 w-7 text-muted-foreground" />
         </div>
@@ -151,30 +149,17 @@ export function ManagerLeaveTable({
 
                   {/* Actions */}
                   <td className="px-4 py-3.5 whitespace-nowrap text-right">
-                    {leave.status === "PENDING" ? (
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => onApproveClick(leave)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-emerald-600/30 bg-emerald-50 dark:bg-emerald-950/30 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors"
-                          title="Approve leave request"
-                        >
-                          <Check className="h-3.5 w-3.5" />
-                          Approve
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => onRejectClick(leave)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-rose-600/30 bg-rose-50 dark:bg-rose-950/30 px-2.5 py-1.5 text-xs font-semibold text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-colors"
-                          title="Reject leave request"
-                        >
-                          <X className="h-3.5 w-3.5" />
-                          Reject
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => onViewDetails(leave)}
+                        className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-semibold text-muted-foreground hover:bg-background transition-colors"
+                        title="View Details"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        View Details
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

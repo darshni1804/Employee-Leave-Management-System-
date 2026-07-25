@@ -26,6 +26,7 @@ import { useAuth } from "@/features/auth/store/AuthContext";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { DashboardPage } from "@/pages/dashboard/DashboardPage";
 import { ManagerDashboardPage } from "@/pages/manager/ManagerDashboardPage";
+import { ManagerTeamLeavesPage } from "@/pages/manager/ManagerTeamLeavesPage";
 import { LeavesPage } from "@/pages/leaves/LeavesPage";
 import { ProfilePage } from "@/pages/profile/ProfilePage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
@@ -106,7 +107,7 @@ export const router = createBrowserRouter([
         element: <ManagerLayout />,
         children: [
           { path: "/approvals", element: <ManagerDashboardPage /> },
-          { path: "/team/leaves", element: <ManagerDashboardPage /> },
+          { path: "/manager/leaves", element: <ManagerTeamLeavesPage /> },
         ],
       },
     ],

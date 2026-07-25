@@ -10,6 +10,7 @@ import { employeeLeavesService } from "../services/employeeLeavesService";
 import { useToast } from "@/hooks/useToast";
 import { getErrorMessage } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { useDashboardStats } from "../hooks/useDashboardStats";
 import type { LeaveRequest } from "@/types";
 
 interface ApplyLeaveFormProps {
@@ -38,6 +39,25 @@ export function ApplyLeaveForm({ onSuccess }: ApplyLeaveFormProps) {
   });
 
   const startDate = watch("start_date");
+  const endDate = watch("end_date");
+
+  const { stats } = useDashboardStats();
+
+  // Compute live summary
+  const getRequestedDays = () => {
+    if (!startDate || !endDate) return 0;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (end < start) return 0;
+    
+    // Simple calculation: including weekends for now, unless specific business logic applies
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays;
+  };
+
+  const requestedDays = getRequestedDays();
+  const balanceAfter = Math.max(stats.remaining - requestedDays, 0);
 
   const onSubmit = async (values: ApplyLeaveFormValues) => {
     setBackendError(null);
@@ -60,17 +80,17 @@ export function ApplyLeaveForm({ onSuccess }: ApplyLeaveFormProps) {
   };
 
   return (
-    <div className="rounded-[18px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.03)] overflow-hidden">
+    <div className="rounded-[18px] border border-border bg-card shadow-[0_2px_8px_rgba(0,0,0,0.03)] overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-[#E5E7EB] px-6 py-5 bg-[#F8FAFC]">
+      <div className="flex items-center gap-3 border-b border-border px-6 py-5 bg-background">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-[#2563EB]">
           <CalendarDays className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="font-heading font-semibold text-base text-[#111827]">
+          <h2 className="font-heading font-semibold text-base text-foreground">
             Apply for Leave
           </h2>
-          <p className="font-sans text-xs text-[#64748B]">
+          <p className="font-sans text-xs text-muted-foreground">
             Submit a new leave request for manager approval
           </p>
         </div>
@@ -94,7 +114,7 @@ export function ApplyLeaveForm({ onSuccess }: ApplyLeaveFormProps) {
           <div>
             <label
               htmlFor="start_date"
-              className="block font-sans text-sm font-medium text-[#374151] mb-2"
+              className="block font-sans text-sm font-medium text-foreground mb-2"
             >
               Start Date <span className="text-rose-500">*</span>
             </label>
@@ -103,10 +123,10 @@ export function ApplyLeaveForm({ onSuccess }: ApplyLeaveFormProps) {
               type="date"
               min={today}
               disabled={isSubmitting}
-              className={`w-full h-12 rounded-xl border bg-white px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563EB] ${
+              className={`w-full h-12 rounded-xl border bg-card px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563EB] ${
                 errors.start_date
                   ? "border-rose-400 focus:ring-rose-500"
-                  : "border-[#D1D5DB]"
+                  : "border-border"
               }`}
               {...register("start_date")}
             />
@@ -121,7 +141,7 @@ export function ApplyLeaveForm({ onSuccess }: ApplyLeaveFormProps) {
           <div>
             <label
               htmlFor="end_date"
-              className="block font-sans text-sm font-medium text-[#374151] mb-2"
+              className="block font-sans text-sm font-medium text-foreground mb-2"
             >
               End Date <span className="text-rose-500">*</span>
             </label>
@@ -130,10 +150,10 @@ export function ApplyLeaveForm({ onSuccess }: ApplyLeaveFormProps) {
               type="date"
               min={startDate || today}
               disabled={isSubmitting}
-              className={`w-full h-12 rounded-xl border bg-white px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563EB] ${
+              className={`w-full h-12 rounded-xl border bg-card px-4 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563EB] ${
                 errors.end_date
                   ? "border-rose-400 focus:ring-rose-500"
-                  : "border-[#D1D5DB]"
+                  : "border-border"
               }`}
               {...register("end_date")}
             />
@@ -149,26 +169,59 @@ export function ApplyLeaveForm({ onSuccess }: ApplyLeaveFormProps) {
         <div>
           <label
             htmlFor="reason"
-            className="block font-sans text-sm font-medium text-[#374151] mb-2"
+            className="block font-sans text-sm font-medium text-foreground mb-2"
           >
             Reason{" "}
-            <span className="text-[#64748B] font-normal">(Optional)</span>
+            <span className="text-muted-foreground font-normal">(Optional)</span>
           </label>
           <textarea
             id="reason"
-            rows={4}
+            rows={3}
             placeholder="Briefly describe the reason for your leave request..."
             disabled={isSubmitting}
-            className="w-full rounded-xl border border-[#D1D5DB] bg-white p-4 text-sm resize-none transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563EB] placeholder:text-[#94A3B8]"
+            className="w-full rounded-xl border border-border bg-card p-4 text-sm resize-none transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563EB] placeholder:text-muted-foreground"
             {...register("reason")}
           />
         </div>
 
-        {/* Submit button with Accent Orange */}
-        <div className="flex justify-end pt-2">
+        {/* Live Summary */}
+        <div className="rounded-xl bg-background border border-border p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="font-sans text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+              Live Summary
+            </p>
+            <div className="flex items-center gap-6">
+              <div>
+                <p className="text-xs text-muted-foreground">Requested</p>
+                <p className="font-mono font-bold text-foreground">{requestedDays} days</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Remaining</p>
+                <p className="font-mono font-bold text-foreground">{stats.remaining} days</p>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground">Balance After</p>
+                <p className={`font-mono font-bold ${balanceAfter < 0 ? 'text-rose-600' : 'text-[#2563EB]'}`}>
+                  {balanceAfter} days
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit & Reset buttons */}
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            type="button"
+            onClick={() => reset()}
+            disabled={isSubmitting}
+            className="h-12 rounded-xl bg-card border border-border px-6 text-sm font-semibold text-muted-foreground hover:bg-background transition-colors focus:outline-none focus:ring-2 focus:ring-[#2563EB] disabled:opacity-50 cursor-pointer"
+          >
+            Reset
+          </button>
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || requestedDays === 0 || balanceAfter < 0}
             className="flex h-12 items-center gap-2 rounded-xl bg-[#FF6A00] px-8 text-sm font-semibold text-white shadow-xs hover:bg-[#FF8533] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF6A00] focus:ring-offset-2 disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? (
@@ -179,7 +232,7 @@ export function ApplyLeaveForm({ onSuccess }: ApplyLeaveFormProps) {
             ) : (
               <>
                 <Send className="h-4 w-4" />
-                <span>Submit Leave Request</span>
+                <span>Submit Leave</span>
               </>
             )}
           </button>

@@ -39,11 +39,11 @@ export function PageHeader({
 
         {/* Title & Subtitle */}
         <div>
-          <h1 className="font-heading font-bold text-2xl md:text-3xl text-[#111827] tracking-tight leading-none mb-1">
+          <h1 className="font-heading font-bold text-2xl md:text-3xl text-foreground tracking-tight leading-none mb-1">
             {title}
           </h1>
           {subtitle && (
-            <p className="font-sans font-normal text-sm text-[#64748B] leading-relaxed">
+            <p className="font-sans font-normal text-sm text-muted-foreground leading-relaxed">
               {subtitle}
             </p>
           )}

@@ -10,6 +10,7 @@ import {
   PlusCircle,
   TrendingUp,
   LayoutDashboard,
+  UserCircle,
 } from "lucide-react";
 import { useAuth } from "@/features/auth/store/AuthContext";
 import { useDashboardStats } from "@/features/leaves/hooks/useDashboardStats";
@@ -17,7 +18,7 @@ import { EmployeeAnalytics } from "@/features/analytics/components/EmployeeAnaly
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { SkeletonCard, Skeleton } from "@/components/ui/Skeleton";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getGreeting } from "@/lib/utils";
 
 interface StatCard {
   label: string;
@@ -32,12 +33,7 @@ export function DashboardPage() {
   const navigate = useNavigate();
   const { stats, recentLeaves, allLeaves, isLoading, error } = useDashboardStats();
 
-  const greeting = () => {
-    const h = new Date().getHours();
-    if (h < 12) return "Good morning";
-    if (h < 17) return "Good afternoon";
-    return "Good evening";
-  };
+
 
   const displayName = user?.first_name || user?.name?.split(" ")[0] || "there";
 
@@ -70,18 +66,34 @@ export function DashboardPage() {
       {/* Welcome Banner / Header */}
       <PageHeader
         icon={LayoutDashboard}
-        title={`${greeting()}, ${displayName}`}
+        title={`${getGreeting()}, ${displayName}`}
         subtitle="Here's a summary of your leave activity and remaining balances."
-        action={
-          <button
-            onClick={() => navigate("/leaves")}
-            className="flex items-center gap-2 rounded-xl bg-[#FF6A00] px-5 py-3 font-sans text-sm font-semibold text-white shadow-xs hover:bg-[#FF8533] transition-colors cursor-pointer"
-          >
-            <PlusCircle className="h-4 w-4" />
-            Apply for Leave
-          </button>
-        }
       />
+
+      {/* Quick Actions */}
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          onClick={() => navigate("/leaves")}
+          className="flex items-center gap-2 rounded-xl bg-[#FF6A00] px-5 py-2.5 font-sans text-sm font-semibold text-white shadow-xs hover:bg-[#FF8533] transition-colors cursor-pointer"
+        >
+          <PlusCircle className="h-4 w-4" />
+          Apply Leave
+        </button>
+        <button
+          onClick={() => navigate("/leaves")}
+          className="flex items-center gap-2 rounded-xl bg-card border border-border px-5 py-2.5 font-sans text-sm font-semibold text-muted-foreground shadow-xs hover:bg-background transition-colors cursor-pointer"
+        >
+          <CalendarClock className="h-4 w-4" />
+          Open Leave Requests
+        </button>
+        <button
+          onClick={() => navigate("/profile")}
+          className="flex items-center gap-2 rounded-xl bg-card border border-border px-5 py-2.5 font-sans text-sm font-semibold text-muted-foreground shadow-xs hover:bg-background transition-colors cursor-pointer"
+        >
+          <UserCircle className="h-4 w-4" />
+          View Profile
+        </button>
+      </div>
 
       {/* Error notification */}
       {error && (
@@ -97,10 +109,10 @@ export function DashboardPage() {
           : statCards.map((card) => (
               <div
                 key={card.label}
-                className="rounded-[18px] border border-[#E5E7EB] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-180"
+                className="rounded-[18px] border border-border bg-card p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-180"
               >
                 <div className="flex items-start justify-between mb-4">
-                  <p className="font-sans text-sm font-semibold text-[#475569]">
+                  <p className="font-sans text-sm font-semibold text-muted-foreground">
                     {card.label}
                   </p>
                   <div
@@ -109,10 +121,10 @@ export function DashboardPage() {
                     <card.icon className="h-5 w-5" />
                   </div>
                 </div>
-                <p className="font-mono text-3xl md:text-4xl font-bold text-[#111827] tracking-tight">
+                <p className="font-mono text-3xl md:text-4xl font-bold text-foreground tracking-tight">
                   {card.value}
                 </p>
-                <p className="font-sans text-xs text-[#64748B] mt-1.5">
+                <p className="font-sans text-xs text-muted-foreground mt-1.5">
                   {card.subLabel}
                 </p>
               </div>
@@ -123,8 +135,8 @@ export function DashboardPage() {
       <div className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <TrendingUp className="h-5 w-5 text-[#475569]" />
-            <h2 className="font-heading font-bold text-lg text-[#111827]">
+            <TrendingUp className="h-5 w-5 text-muted-foreground" />
+            <h2 className="font-heading font-bold text-lg text-foreground">
               Recent Leave Activity
             </h2>
           </div>
@@ -137,7 +149,7 @@ export function DashboardPage() {
         </div>
 
         {isLoading ? (
-          <div className="rounded-[18px] border border-[#E5E7EB] bg-white divide-y divide-[#E5E7EB]">
+          <div className="rounded-[18px] border border-border bg-card divide-y divide-[#E5E7EB]">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="flex items-center justify-between px-6 py-4">
                 <div className="space-y-2">
@@ -149,31 +161,31 @@ export function DashboardPage() {
             ))}
           </div>
         ) : recentLeaves.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 rounded-[18px] border border-[#E5E7EB] bg-white text-center">
-            <CalendarClock className="h-10 w-10 text-[#94A3B8] mb-3" />
-            <p className="font-sans text-base font-semibold text-[#111827]">
+          <div className="flex flex-col items-center justify-center py-10 rounded-[18px] border border-border bg-card text-center">
+            <CalendarClock className="h-10 w-10 text-muted-foreground mb-3" />
+            <p className="font-sans text-base font-semibold text-foreground">
               No leave history yet
             </p>
-            <p className="font-sans text-xs text-[#64748B] mt-1">
+            <p className="font-sans text-xs text-muted-foreground mt-1">
               Submit your first leave request to see your activity here.
             </p>
           </div>
         ) : (
-          <div className="rounded-[18px] border border-[#E5E7EB] bg-white overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.03)] divide-y divide-[#E5E7EB]">
+          <div className="rounded-[18px] border border-border bg-card overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.03)] divide-y divide-[#E5E7EB]">
             {recentLeaves.map((leave) => {
               const days = leave.duration_days ?? leave.total_days ?? 0;
               return (
                 <div
                   key={leave.id}
-                  className="flex items-center justify-between px-6 py-4 hover:bg-[#F8FAFC] transition-colors"
+                  className="flex items-center justify-between px-6 py-4 hover:bg-background transition-colors"
                 >
                   <div>
-                    <p className="font-sans text-sm font-semibold text-[#111827]">
+                    <p className="font-sans text-sm font-semibold text-foreground">
                       {formatDate(leave.start_date)}{" "}
-                      <span className="text-[#94A3B8] font-normal mx-1">→</span>{" "}
+                      <span className="text-muted-foreground font-normal mx-1">→</span>{" "}
                       {formatDate(leave.end_date)}
                     </p>
-                    <p className="font-sans text-xs text-[#64748B] mt-1">
+                    <p className="font-sans text-xs text-muted-foreground mt-1">
                       {days} {days === 1 ? "day" : "days"}
                       {leave.reason ? ` · ${leave.reason}` : ""}
                     </p>

@@ -42,7 +42,7 @@ export function TechnodhaLogo({
       {/* Dark Navy 'L' Shape */}
       <path
         d="M 20 10 L 36 10 L 36 62 L 64 62 L 74 76 L 32 76 C 25 76, 20 71, 20 64 Z"
-        fill="#161233"
+        className="fill-foreground"
       />
       {/* Orange 'M' Head Circle */}
       <circle cx="58" cy="18" r="8" fill="#FF5A00" />
@@ -69,14 +69,14 @@ export function TechnodhaLogo({
         {LMMark}
         <div className="mt-3 flex flex-col items-center min-w-0">
           <div className="flex items-center whitespace-nowrap font-black tracking-tight font-sans text-xl">
-            <span className="text-[#161233]">TECHN</span>
+            <span className="text-foreground">TECHN</span>
             <span className="text-[#FF5A00]">O</span>
-            <span className="text-[#161233]">DH^</span>
-            <span className="text-[#161233] ml-1">LEAVE</span>
+            <span className="text-foreground">DHA</span>
+            <span className="text-foreground ml-1.5">LEAVE</span>
             <span className="text-[#FF5A00]">MATE</span>
           </div>
           <div className="h-[1px] w-full bg-slate-300 my-1 opacity-80" />
-          <span className="whitespace-nowrap text-[9px] font-bold text-[#555E6D] tracking-widest uppercase">
+          <span className="whitespace-nowrap text-[9px] font-bold text-muted-foreground tracking-widest uppercase">
             SMART LEAVE MANAGEMENT SYSTEM
           </span>
         </div>
@@ -97,10 +97,10 @@ export function TechnodhaLogo({
       <div className="flex flex-col leading-none min-w-0">
         {/* Title row */}
         <div className="flex items-center whitespace-nowrap text-xs font-black tracking-tight font-sans">
-          <span className="text-[#161233]">TECHN</span>
+          <span className="text-foreground">TECHN</span>
           <span className="text-[#FF5A00]">O</span>
-          <span className="text-[#161233]">DH^</span>
-          <span className="text-[#161233] ml-1">LEAVE</span>
+          <span className="text-foreground">DHA</span>
+          <span className="text-foreground ml-1.5">LEAVE</span>
           <span className="text-[#FF5A00]">MATE</span>
         </div>
 
@@ -108,8 +108,8 @@ export function TechnodhaLogo({
         <div className="h-[1px] w-full bg-slate-300 my-[3px] opacity-80" />
 
         {/* Subtitle */}
-        <span className="whitespace-nowrap text-[7px] font-bold text-[#555E6D] tracking-wider uppercase">
-          SMART LEAVE MANAGEMENT SYSTEM
+        <span className="whitespace-nowrap text-[7px] font-bold text-muted-foreground tracking-wider uppercase">
+            SMART LEAVE MANAGEMENT SYSTEM
         </span>
       </div>
     </div>

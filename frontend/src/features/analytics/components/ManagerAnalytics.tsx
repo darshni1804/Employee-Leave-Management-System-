@@ -61,10 +61,10 @@ const STATUS_COLORS: Record<string, string> = {
 // ─────────────────────────────────────────
 function ChartCard({ title, icon: Icon, children, className }: { title: string; icon: React.ElementType; children: React.ReactNode; className?: string }) {
   return (
-    <div className={`rounded-[18px] border border-[#E5E7EB] bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)] ${className ?? ""}`}>
+    <div className={`rounded-[18px] border border-border bg-card p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)] ${className ?? ""}`}>
       <div className="flex items-center gap-2 mb-4">
-        <Icon className="h-4 w-4 text-[#475569]" />
-        <h3 className="font-heading font-semibold text-sm text-[#111827]">{title}</h3>
+        <Icon className="h-4 w-4 text-muted-foreground" />
+        <h3 className="font-heading font-semibold text-sm text-foreground">{title}</h3>
       </div>
       {children}
     </div>
@@ -77,8 +77,8 @@ function ChartCard({ title, icon: Icon, children, className }: { title: string; 
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 shadow-lg text-xs">
-      {label && <p className="font-semibold text-[#111827] mb-1">{label}</p>}
+    <div className="rounded-xl border border-border bg-card px-3 py-2 shadow-lg text-xs">
+      {label && <p className="font-semibold text-foreground mb-1">{label}</p>}
       {payload.map((p) => (
         <p key={p.name} style={{ color: p.color }} className="font-medium">
           {p.name}: {p.value}
@@ -189,8 +189,8 @@ export function ManagerAnalytics({ leaves, stats, isLoading }: ManagerAnalyticsP
     <div className="space-y-6 pt-4">
       {/* Section heading */}
       <div className="flex items-center gap-2.5">
-        <BarChart2 className="h-5 w-5 text-[#475569]" />
-        <h2 className="font-heading font-bold text-lg text-[#111827]">Manager Analytics</h2>
+        <BarChart2 className="h-5 w-5 text-muted-foreground" />
+        <h2 className="font-heading font-bold text-lg text-foreground">Manager Analytics</h2>
       </div>
 
       {/* Insight Cards */}
@@ -203,11 +203,11 @@ export function ManagerAnalytics({ leaves, stats, isLoading }: ManagerAnalyticsP
         ].map(({ label, value, icon: Icon, color }) => (
           <div
             key={label}
-            className="rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
+            className="rounded-[14px] border border-border bg-card px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
           >
             <div className="flex items-center gap-2 mb-1">
               <Icon className={`h-3.5 w-3.5 ${color}`} />
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8]">{label}</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
             </div>
             <p className={`font-mono text-xl font-bold ${color} truncate`}>{value}</p>
           </div>
@@ -232,7 +232,7 @@ export function ManagerAnalytics({ leaves, stats, isLoading }: ManagerAnalyticsP
         {/* 2. Status Distribution (Donut) */}
         <ChartCard title="Leave Status Distribution" icon={CheckCircle2}>
           {statusData.length === 0 ? (
-            <div className="flex h-48 items-center justify-center text-xs text-[#94A3B8]">No leave data</div>
+            <div className="flex h-48 items-center justify-center text-xs text-muted-foreground">No leave data</div>
           ) : (
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
@@ -253,7 +253,7 @@ export function ManagerAnalytics({ leaves, stats, isLoading }: ManagerAnalyticsP
                 <Legend
                   iconType="circle"
                   iconSize={8}
-                  formatter={(v) => <span className="text-xs text-[#475569]">{v}</span>}
+                  formatter={(v) => <span className="text-xs text-muted-foreground">{v}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -268,7 +268,7 @@ export function ManagerAnalytics({ leaves, stats, isLoading }: ManagerAnalyticsP
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} allowDecimals={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Legend iconType="circle" iconSize={8} formatter={(v) => <span className="text-xs text-[#475569]">{v}</span>} />
+              <Legend iconType="circle" iconSize={8} formatter={(v) => <span className="text-xs text-muted-foreground">{v}</span>} />
               <Bar dataKey="approved" name="Approved" stackId="a" fill="#16A34A" radius={[0, 0, 0, 0]} />
               <Bar dataKey="rejected" name="Rejected" stackId="a" fill="#DC2626" radius={[6, 6, 0, 0]} />
             </BarChart>
@@ -293,7 +293,7 @@ export function ManagerAnalytics({ leaves, stats, isLoading }: ManagerAnalyticsP
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 10, fill: "#94A3B8" }} axisLine={false} tickLine={false} allowDecimals={false} />
               <Tooltip content={<CustomTooltip />} />
-              <Legend iconType="circle" iconSize={8} formatter={(v) => <span className="text-xs text-[#475569]">{v}</span>} />
+              <Legend iconType="circle" iconSize={8} formatter={(v) => <span className="text-xs text-muted-foreground">{v}</span>} />
               <Area type="monotone" dataKey="approved" name="Approved" stroke="#16A34A" strokeWidth={2} fill="url(#approvedGrad)" dot={false} />
               <Area type="monotone" dataKey="rejected" name="Rejected" stroke="#DC2626" strokeWidth={2} fill="url(#rejectedGrad)" dot={false} />
             </AreaChart>
@@ -306,7 +306,7 @@ export function ManagerAnalytics({ leaves, stats, isLoading }: ManagerAnalyticsP
         {/* Employee Leave Utilization (Horizontal Bar) */}
         <ChartCard title="Employee Leave Utilization" icon={Users}>
           {utilizationData.length === 0 ? (
-            <div className="flex h-48 items-center justify-center text-xs text-[#94A3B8]">No employee data</div>
+            <div className="flex h-48 items-center justify-center text-xs text-muted-foreground">No employee data</div>
           ) : (
             <ResponsiveContainer width="100%" height={Math.max(utilizationData.length * 32, 160)}>
               <BarChart
@@ -372,8 +372,8 @@ export function ManagerAnalytics({ leaves, stats, isLoading }: ManagerAnalyticsP
                   <Icon className={`h-3.5 w-3.5 ${color}`} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8]">{label}</p>
-                  <p className="text-xs font-medium text-[#111827] mt-0.5">{value}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+                  <p className="text-xs font-medium text-foreground mt-0.5">{value}</p>
                 </div>
               </div>
             ))}

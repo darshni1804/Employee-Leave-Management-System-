@@ -46,12 +46,12 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-[18px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.03)] overflow-hidden">
-      <div className="flex items-center gap-3 border-b border-[#E5E7EB] px-6 py-4">
+    <div className="rounded-[18px] border border-border bg-card shadow-[0_2px_8px_rgba(0,0,0,0.03)] overflow-hidden">
+      <div className="flex items-center gap-3 border-b border-border px-6 py-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#EFF6FF]">
           <Icon className="h-4 w-4 text-[#2563EB]" />
         </div>
-        <h2 className="font-heading font-semibold text-base text-[#111827]">{title}</h2>
+        <h2 className="font-heading font-semibold text-base text-foreground">{title}</h2>
       </div>
       <div className="p-6">{children}</div>
     </div>
@@ -72,7 +72,7 @@ function FormField({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-xs font-semibold text-[#475569] uppercase tracking-wider">
+      <label htmlFor={id} className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
         {label}
       </label>
       {children}
@@ -81,7 +81,7 @@ function FormField({
 }
 
 const inputClass =
-  "w-full rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-2.5 text-sm text-[#111827] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition-colors";
+  "w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition-colors";
 
 // ─────────────────────────────────────────
 // Sub-component: Inline Alert
@@ -200,14 +200,14 @@ export function ProfilePage() {
       />
 
       {/* ── Profile Card ──────────────────────────────────── */}
-      <div className="rounded-[18px] border border-[#E5E7EB] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.03)] overflow-hidden">
+      <div className="rounded-[18px] border border-border bg-card shadow-[0_2px_8px_rgba(0,0,0,0.03)] overflow-hidden">
         {/* Banner */}
         <div className="h-28 bg-gradient-to-r from-[#2563EB] via-[#3B82F6] to-[#6366F1]" />
 
         <div className="px-6 pb-6 -mt-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           {/* Avatar */}
           <div className="relative">
-            <div className="h-24 w-24 rounded-2xl border-4 border-white bg-[#E2E8F0] flex items-center justify-center overflow-hidden shadow-md">
+            <div className="h-24 w-24 rounded-2xl border-4 border-white bg-muted/80 flex items-center justify-center overflow-hidden shadow-md">
               {photoPreview ? (
                 <img src={photoPreview} alt="Avatar" className="h-full w-full object-cover" />
               ) : (
@@ -233,10 +233,10 @@ export function ProfilePage() {
 
           {/* Identity */}
           <div className="flex-1 sm:ml-4 mt-2 sm:mt-0">
-            <h1 className="font-heading text-xl font-bold text-[#111827] leading-tight">
+            <h1 className="font-heading text-xl font-bold text-foreground leading-tight">
               {displayName}
             </h1>
-            <p className="text-sm text-[#64748B] mt-0.5">
+            <p className="text-sm text-muted-foreground mt-0.5">
               {designation || roleLabel}
               {user?.department ? ` · ${user.department}` : ""}
             </p>
@@ -257,7 +257,7 @@ export function ProfilePage() {
         </div>
 
         {/* Info Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 border-t border-[#E5E7EB]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 border-t border-border">
           {[
             { icon: Mail, label: "Email", value: user?.email },
             { icon: Briefcase, label: "Employee ID", value: user?.employee_id || "—" },
@@ -268,14 +268,14 @@ export function ProfilePage() {
           ].map(({ icon: Icon, label, value }, idx) => (
             <div
               key={label}
-              className={`flex items-center gap-3 px-6 py-4 ${idx % 3 !== 2 ? "lg:border-r border-[#E5E7EB]" : ""} ${idx < 3 ? "sm:border-b border-[#E5E7EB]" : ""}`}
+              className={`flex items-center gap-3 px-6 py-4 ${idx % 3 !== 2 ? "lg:border-r border-border" : ""} ${idx < 3 ? "sm:border-b border-border" : ""}`}
             >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#F1F5F9]">
-                <Icon className="h-4 w-4 text-[#64748B]" />
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted">
+                <Icon className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8]">{label}</p>
-                <p className="text-sm font-medium text-[#111827] truncate">{value}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+                <p className="text-sm font-medium text-foreground truncate">{value}</p>
               </div>
             </div>
           ))}
@@ -371,8 +371,8 @@ export function ProfilePage() {
           {/* Photo actions */}
           {photoPreview && (
             <div className="flex items-center gap-3">
-              <img src={photoPreview} alt="Preview" className="h-12 w-12 rounded-xl object-cover border border-[#E5E7EB]" />
-              <div className="text-xs text-[#64748B]">
+              <img src={photoPreview} alt="Preview" className="h-12 w-12 rounded-xl object-cover border border-border" />
+              <div className="text-xs text-muted-foreground">
                 {photoFile ? `New photo selected: ${photoFile.name}` : "Current profile photo"}
               </div>
               {photoFile && (
@@ -406,7 +406,7 @@ export function ProfilePage() {
       {/* ── Security Section ──────────────────────────────── */}
       <SectionCard icon={Lock} title="Security">
         <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-md">
-          <p className="text-sm text-[#64748B]">
+          <p className="text-sm text-muted-foreground">
             Change your password. You will need your current password to confirm the change.
           </p>
 
@@ -429,7 +429,7 @@ export function ProfilePage() {
                 <button
                   type="button"
                   onClick={toggleShow}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#64748B] transition-colors cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
                   tabIndex={-1}
                 >
                   {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -442,8 +442,8 @@ export function ProfilePage() {
           {pwdSuccess && <Alert type="success" message={pwdSuccess} />}
 
           <div className="flex items-center gap-3 pt-2">
-            <Shield className="h-4 w-4 text-[#64748B] shrink-0" />
-            <p className="text-xs text-[#64748B]">
+            <Shield className="h-4 w-4 text-muted-foreground shrink-0" />
+            <p className="text-xs text-muted-foreground">
               Use at least 8 characters with a mix of letters, numbers, and symbols.
             </p>
           </div>

@@ -4,28 +4,28 @@
  */
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { LayoutDashboard, CalendarPlus, CalendarDays, UserCircle } from "lucide-react";
-import { Sidebar, type NavItemConfig } from "@/components/shared/Sidebar";
+import { LayoutDashboard, CalendarDays, UserCircle } from "lucide-react";
+import { Sidebar } from "@/components/shared/Sidebar";
 import { TopNavbar } from "@/components/shared/TopNavbar";
-
-const navLinks: NavItemConfig[] = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/leaves", label: "Apply Leave", icon: CalendarPlus },
-  { to: "/balances", label: "Leave History", icon: CalendarDays },
-  { to: "/profile", label: "Profile", icon: UserCircle },
-];
+import { useSettings } from "@/features/settings/SettingsContext";
 
 export function EmployeeLayout() {
-  const [collapsed, setCollapsed] = useState(false);
+  const { settings, updateSetting } = useSettings();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const navLinks = [
+    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/leaves", label: "Leave Requests", icon: CalendarDays },
+    { to: "/profile", label: "Profile", icon: UserCircle, isFilledButton: true },
+  ];
+
   return (
-    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         navLinks={navLinks}
-        collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed((v) => !v)}
+        collapsed={settings.sidebarCollapsed}
+        onToggleCollapse={() => updateSetting("sidebarCollapsed", !settings.sidebarCollapsed)}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
       />

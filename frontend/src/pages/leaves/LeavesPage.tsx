@@ -3,8 +3,7 @@
  */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CalendarDays, Plus, ClipboardList, ShieldAlert, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { CalendarDays, ShieldAlert, ArrowRight } from "lucide-react";
 import { useAuth } from "@/features/auth/store/AuthContext";
 import { useMyLeaves } from "@/features/leaves/hooks/useMyLeaves";
 import { LeaveFilters } from "@/features/leaves/components/LeaveFilters";
@@ -16,12 +15,9 @@ import { SkeletonTable } from "@/components/ui/Skeleton";
 import { PageHeader } from "@/components/shared/PageHeader";
 import type { LeaveRequest } from "@/types";
 
-type Tab = "history" | "apply";
-
 export function LeavesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<Tab>("history");
   const [selectedLeave, setSelectedLeave] = useState<LeaveRequest | null>(null);
 
   const isManager = user?.role === "MANAGER";
@@ -37,14 +33,8 @@ export function LeavesPage() {
   };
 
   const handleApplySuccess = () => {
-    setActiveTab("history");
     refresh();
   };
-
-  const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
-    { id: "history", label: "My Leaves", icon: ClipboardList },
-    { id: "apply", label: "Apply Leave", icon: Plus },
-  ];
 
   // If user is a Manager, show clear Role separation banner
   if (isManager) {
@@ -90,85 +80,68 @@ export function LeavesPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
-      {/* Page Header */}
-      <PageHeader
-        icon={CalendarDays}
-        title="Leave Requests"
-        subtitle="Manage, track, and apply for your leave requests."
-      />
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Top Section: Apply Leave Card */}
+      <section className="space-y-4">
+        <ApplyLeaveForm onSuccess={handleApplySuccess} />
+      </section>
 
-      {/* Tabs */}
-      <div className="flex border-b border-[#E5E7EB] gap-2">
-        {tabs.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => setActiveTab(id)}
-            className={cn(
-              "flex items-center gap-2 px-6 py-3 font-sans text-sm font-semibold border-b-2 transition-colors cursor-pointer",
-              activeTab === id
-                ? "border-[#2563EB] text-[#2563EB]"
-                : "border-transparent text-[#64748B] hover:text-[#111827] hover:border-slate-300"
-            )}
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab: My Leaves */}
-      {activeTab === "history" && (
-        <div className="space-y-5">
-          <LeaveFilters
-            filters={filters}
-            onChange={setFilters}
-            isLoading={isLoading}
-          />
-
-          {!isLoading && pagination && (
-            <p className="font-sans text-xs text-[#64748B]">
-              {pagination.count === 0
-                ? "No leave records found"
-                : `Showing ${leaves.length} of ${pagination.count} request${pagination.count !== 1 ? "s" : ""}`}
+      {/* Bottom Section: Leave Requests Management */}
+      <section className="space-y-5 pt-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-4">
+          <div>
+            <h2 className="font-heading font-bold text-xl text-foreground">
+              My Leave Requests
+            </h2>
+            <p className="font-sans text-xs text-muted-foreground mt-0.5">
+              Apply for leave, track request status, and manage your leave history.
             </p>
-          )}
-
-          {error && (
-            <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-700">
-              {error}
-            </div>
-          )}
-
-          {isLoading ? (
-            <SkeletonTable rows={5} cols={6} />
-          ) : (
-            <LeaveHistoryTable
-              leaves={leaves}
-              onCancelClick={handleCancelClick}
-            />
-          )}
-
-          {!isLoading && pagination && pagination.total_pages > 1 && (
-            <div className="flex items-center justify-between pt-2">
-              <p className="font-sans text-xs text-[#64748B]">
-                Page {pagination.page} of {pagination.total_pages}
-              </p>
-              <Pagination
-                page={filters.page ?? 1}
-                totalPages={pagination.total_pages}
-                onPageChange={(p) => setFilters({ page: p })}
-              />
-            </div>
+          </div>
+          {!isLoading && pagination && (
+            <span className="font-sans text-xs font-semibold text-muted-foreground bg-muted px-3 py-1 rounded-full self-start sm:self-auto">
+              Total {pagination.count} Request{pagination.count !== 1 ? "s" : ""}
+            </span>
           )}
         </div>
-      )}
 
-      {/* Tab: Apply Leave */}
-      {activeTab === "apply" && (
-        <ApplyLeaveForm onSuccess={handleApplySuccess} />
-      )}
+        {/* Search & Filters */}
+        <LeaveFilters
+          filters={filters}
+          onChange={setFilters}
+          isLoading={isLoading}
+        />
+
+        {/* Error notification */}
+        {error && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-700">
+            {error}
+          </div>
+        )}
+
+        {/* Table or Skeleton */}
+        {isLoading ? (
+          <SkeletonTable rows={5} cols={8} />
+        ) : (
+          <LeaveHistoryTable
+            leaves={leaves}
+            onCancelClick={handleCancelClick}
+          />
+        )}
+
+        {/* Pagination */}
+        {!isLoading && pagination && pagination.total_pages > 1 && (
+          <div className="flex items-center justify-between pt-2">
+            <p className="font-sans text-xs text-muted-foreground">
+              Page {pagination.page} of {pagination.total_pages}
+            </p>
+            <Pagination
+              page={filters.page ?? 1}
+              totalPages={pagination.total_pages}
+              onPageChange={(p) => setFilters({ page: p })}
+            />
+          </div>
+        )}
+      </section>
 
       {/* Cancel Confirmation Dialog */}
       <CancelLeaveDialog

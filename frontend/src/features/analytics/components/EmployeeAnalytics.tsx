@@ -51,10 +51,10 @@ const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 // ─────────────────────────────────────────
 function ChartCard({ title, icon: Icon, children }: { title: string; icon: React.ElementType; children: React.ReactNode }) {
   return (
-    <div className="rounded-[18px] border border-[#E5E7EB] bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+    <div className="rounded-[18px] border border-border bg-card p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
       <div className="flex items-center gap-2 mb-4">
-        <Icon className="h-4 w-4 text-[#475569]" />
-        <h3 className="font-heading font-semibold text-sm text-[#111827]">{title}</h3>
+        <Icon className="h-4 w-4 text-muted-foreground" />
+        <h3 className="font-heading font-semibold text-sm text-foreground">{title}</h3>
       </div>
       {children}
     </div>
@@ -88,8 +88,8 @@ function BalanceRing({ used, total }: { used: number; total: number }) {
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="font-mono text-3xl font-bold text-[#111827]">{total - used}</span>
-        <span className="text-xs text-[#64748B] font-medium">remaining</span>
+        <span className="font-mono text-3xl font-bold text-foreground">{total - used}</span>
+        <span className="text-xs text-muted-foreground font-medium">remaining</span>
       </div>
     </div>
   );
@@ -101,8 +101,8 @@ function BalanceRing({ used, total }: { used: number; total: number }) {
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 shadow-lg text-xs">
-      {label && <p className="font-semibold text-[#111827] mb-1">{label}</p>}
+    <div className="rounded-xl border border-border bg-card px-3 py-2 shadow-lg text-xs">
+      {label && <p className="font-semibold text-foreground mb-1">{label}</p>}
       {payload.map((p) => (
         <p key={p.name} style={{ color: p.color }} className="font-medium">
           {p.name}: {p.value}
@@ -206,8 +206,8 @@ export function EmployeeAnalytics({ leaves, stats, isLoading }: EmployeeAnalytic
     <div className="space-y-6 pt-4">
       {/* Section heading */}
       <div className="flex items-center gap-2.5">
-        <BarChart2 className="h-5 w-5 text-[#475569]" />
-        <h2 className="font-heading font-bold text-lg text-[#111827]">Employee Analytics</h2>
+        <BarChart2 className="h-5 w-5 text-muted-foreground" />
+        <h2 className="font-heading font-bold text-lg text-foreground">Employee Analytics</h2>
       </div>
 
       {/* Quick Insights Row */}
@@ -217,15 +217,15 @@ export function EmployeeAnalytics({ leaves, stats, isLoading }: EmployeeAnalytic
           { label: "This Month", value: currentMonthLeaves, icon: Calendar, color: "text-[#2563EB]" },
           { label: "This Year", value: currentYearLeaves, icon: TrendingUp, color: "text-[#7C3AED]" },
           { label: "Avg Duration", value: `${avgDuration}d`, icon: Clock, color: "text-[#D97706]" },
-          { label: "Annual Quota", value: `${usedDays}/${MAX_ANNUAL_LEAVE}d`, icon: Target, color: "text-[#64748B]" },
+          { label: "Annual Quota", value: `${usedDays}/${MAX_ANNUAL_LEAVE}d`, icon: Target, color: "text-muted-foreground" },
         ].map(({ label, value, icon: Icon, color }) => (
           <div
             key={label}
-            className="rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
+            className="rounded-[14px] border border-border bg-card px-4 py-3 shadow-[0_1px_4px_rgba(0,0,0,0.04)]"
           >
             <div className="flex items-center gap-2 mb-1">
               <Icon className={`h-3.5 w-3.5 ${color}`} />
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-[#94A3B8]">{label}</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
             </div>
             <p className={`font-mono text-xl font-bold ${color}`}>{value}</p>
           </div>
@@ -239,13 +239,13 @@ export function EmployeeAnalytics({ leaves, stats, isLoading }: EmployeeAnalytic
           <div className="relative flex items-center justify-center h-44">
             <BalanceRing used={usedDays} total={MAX_ANNUAL_LEAVE} />
             <div className="absolute flex flex-col items-center pointer-events-none">
-              <span className="font-mono text-3xl font-bold text-[#111827]">{stats.remaining}</span>
-              <span className="text-xs text-[#64748B] font-medium">days left</span>
+              <span className="font-mono text-3xl font-bold text-foreground">{stats.remaining}</span>
+              <span className="text-xs text-muted-foreground font-medium">days left</span>
             </div>
           </div>
-          <div className="flex justify-between text-xs text-[#64748B] mt-2 border-t border-[#F1F5F9] pt-3">
-            <span>Used: <strong className="text-[#111827]">{usedDays}d</strong></span>
-            <span>Total: <strong className="text-[#111827]">{MAX_ANNUAL_LEAVE}d</strong></span>
+          <div className="flex justify-between text-xs text-muted-foreground mt-2 border-t border-[#F1F5F9] pt-3">
+            <span>Used: <strong className="text-foreground">{usedDays}d</strong></span>
+            <span>Total: <strong className="text-foreground">{MAX_ANNUAL_LEAVE}d</strong></span>
             <span>Left: <strong className="text-[#2563EB]">{stats.remaining}d</strong></span>
           </div>
         </ChartCard>
@@ -253,7 +253,7 @@ export function EmployeeAnalytics({ leaves, stats, isLoading }: EmployeeAnalytic
         {/* 2. Status Distribution (Donut) */}
         <ChartCard title="Leave Status Distribution" icon={CheckCircle2}>
           {statusData.length === 0 ? (
-            <div className="flex h-44 items-center justify-center text-xs text-[#94A3B8]">No leave data</div>
+            <div className="flex h-44 items-center justify-center text-xs text-muted-foreground">No leave data</div>
           ) : (
             <ResponsiveContainer width="100%" height={176}>
               <PieChart>
@@ -274,7 +274,7 @@ export function EmployeeAnalytics({ leaves, stats, isLoading }: EmployeeAnalytic
                 <Legend
                   iconType="circle"
                   iconSize={8}
-                  formatter={(value) => <span className="text-xs text-[#475569]">{value}</span>}
+                  formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -302,7 +302,7 @@ export function EmployeeAnalytics({ leaves, stats, isLoading }: EmployeeAnalytic
       {/* Monthly Trend — full width */}
       <ChartCard title="Monthly Leave Trend" icon={TrendingUp}>
         {leaves.length === 0 ? (
-          <div className="flex h-44 items-center justify-center text-xs text-[#94A3B8]">No leave data yet</div>
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground">No leave data yet</div>
         ) : (
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={monthlyData} margin={{ top: 4, right: 16, left: -20, bottom: 0 }}>
@@ -313,7 +313,7 @@ export function EmployeeAnalytics({ leaves, stats, isLoading }: EmployeeAnalytic
               <Legend
                 iconType="circle"
                 iconSize={8}
-                formatter={(value) => <span className="text-xs capitalize text-[#475569]">{value}</span>}
+                formatter={(value) => <span className="text-xs capitalize text-muted-foreground">{value}</span>}
               />
               <Line type="monotone" dataKey="approved" stroke="#16A34A" strokeWidth={2} dot={false} name="Approved" />
               <Line type="monotone" dataKey="pending" stroke="#D97706" strokeWidth={2} dot={false} name="Pending" />

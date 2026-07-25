@@ -24,7 +24,7 @@ export function LeaveHistoryTable({
 }: LeaveHistoryTableProps) {
   if (leaves.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border bg-card">
+      <div className="flex flex-col items-center justify-center py-10 text-center rounded-xl border bg-card">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted mb-4">
           <Calendar className="h-7 w-7 text-muted-foreground" />
         </div>
@@ -46,10 +46,7 @@ export function LeaveHistoryTable({
           <thead>
             <tr className="border-b bg-muted/40">
               <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
-                Start Date
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
-                End Date
+                Leave Dates
               </th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
                 Duration
@@ -60,7 +57,16 @@ export function LeaveHistoryTable({
               <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+                Applied On
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
+                Reviewed By
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Comments
+              </th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">
                 Actions
               </th>
             </tr>
@@ -68,20 +74,29 @@ export function LeaveHistoryTable({
           <tbody className="divide-y divide-border">
             {leaves.map((leave) => {
               const days = leave.duration_days ?? leave.total_days ?? 0;
+              const reviewerName = leave.reviewed_by 
+                ? `${leave.reviewed_by.first_name} ${leave.reviewed_by.last_name}`.trim() || leave.reviewed_by.name 
+                : "—";
+
               return (
-                <tr
-                  key={leave.id}
-                  className="hover:bg-muted/30 transition-colors"
-                >
-                  <td className="px-4 py-3.5 whitespace-nowrap font-medium">
-                    {formatDate(leave.start_date)}
+                <tr key={leave.id} className="hover:bg-muted/30 transition-colors">
+                  {/* Leave Dates */}
+                  <td className="px-4 py-3.5 whitespace-nowrap">
+                    <span className="font-medium text-foreground">
+                      {formatDate(leave.start_date)}
+                    </span>
+                    <span className="text-muted-foreground mx-1">→</span>
+                    <span className="text-muted-foreground">
+                      {formatDate(leave.end_date)}
+                    </span>
                   </td>
-                  <td className="px-4 py-3.5 whitespace-nowrap text-muted-foreground">
-                    {formatDate(leave.end_date)}
-                  </td>
+
+                  {/* Duration */}
                   <td className="px-4 py-3.5 whitespace-nowrap text-muted-foreground">
                     {days} {days === 1 ? "day" : "days"}
                   </td>
+
+                  {/* Reason */}
                   <td className="px-4 py-3.5 max-w-[180px]">
                     {leave.reason ? (
                       <span
@@ -96,10 +111,38 @@ export function LeaveHistoryTable({
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3.5">
+
+                  {/* Status */}
+                  <td className="px-4 py-3.5 whitespace-nowrap">
                     <StatusBadge status={leave.status} />
                   </td>
-                  <td className="px-4 py-3.5 text-right">
+
+                  {/* Applied On */}
+                  <td className="px-4 py-3.5 whitespace-nowrap text-xs text-muted-foreground">
+                    {formatDate(leave.created_at)}
+                  </td>
+
+                  {/* Reviewed By */}
+                  <td className="px-4 py-3.5 whitespace-nowrap text-xs text-muted-foreground">
+                    {reviewerName}
+                  </td>
+
+                  {/* Comments */}
+                  <td className="px-4 py-3.5 max-w-[150px]">
+                    {leave.reviewer_comment ? (
+                      <span
+                        className="block truncate text-muted-foreground text-xs"
+                        title={leave.reviewer_comment}
+                      >
+                        {leave.reviewer_comment}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground italic text-xs">—</span>
+                    )}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-4 py-3.5 whitespace-nowrap text-right">
                     {leave.status === "PENDING" ? (
                       <button
                         type="button"
@@ -111,7 +154,7 @@ export function LeaveHistoryTable({
                         Cancel
                       </button>
                     ) : (
-                      <span className="text-xs text-muted-foreground">—</span>
+                      <span className="text-xs text-muted-foreground font-medium cursor-pointer hover:underline">View Details</span>
                     )}
                   </td>
                 </tr>

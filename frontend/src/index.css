@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Light Mode */
     --background: 210 40% 98%; /* #F8FAFC */
     --foreground: 222.2 84% 4.9%; /* #111827 */
 
@@ -40,6 +41,49 @@
 
     --radius: 0.75rem; /* 12px default */
   }
+
+  .dark {
+    /* Dark Mode overrides */
+    --background: 222.2 84% 4.9%; /* very dark gray */
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 8.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 8.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 25 100% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+
+
+  /* Settings Variables */
+  .density-compact * {
+    padding-top: max(0.25rem, calc(inherit - 0.25rem)) !important;
+    padding-bottom: max(0.25rem, calc(inherit - 0.25rem)) !important;
+  }
+  
+  .no-animations * {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
 }
 
 @layer base {
@@ -47,7 +91,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-[#F8FAFC] text-[#111827] font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
   h1, h2, h3, h4, h5, h6 {

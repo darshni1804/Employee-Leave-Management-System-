@@ -74,7 +74,7 @@ export function ManagerStatCards({ stats, isLoading }: ManagerStatCardsProps) {
       label: "Cancelled Total",
       value: stats.cancelled_total,
       icon: Ban,
-      iconBg: "bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]",
+      iconBg: "bg-background text-muted-foreground border border-[#E2E8F0]",
       subLabel: "Cancelled by employee",
     },
   ];
@@ -86,10 +86,10 @@ export function ManagerStatCards({ stats, isLoading }: ManagerStatCardsProps) {
         return (
           <div
             key={card.label}
-            className="rounded-[18px] border border-[#E5E7EB] bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-180"
+            className="rounded-[18px] border border-border bg-card p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] transition-all duration-180"
           >
             <div className="flex items-start justify-between mb-4">
-              <p className="font-sans text-sm font-semibold text-[#475569]">
+              <p className="font-sans text-sm font-semibold text-muted-foreground">
                 {card.label}
               </p>
               <div
@@ -98,10 +98,10 @@ export function ManagerStatCards({ stats, isLoading }: ManagerStatCardsProps) {
                 <Icon className="h-5 w-5" />
               </div>
             </div>
-            <p className="font-mono text-3xl md:text-4xl font-bold text-[#111827] tracking-tight">
+            <p className="font-mono text-3xl md:text-4xl font-bold text-foreground tracking-tight">
               {card.value}
             </p>
-            <p className="font-sans text-xs text-[#64748B] mt-1.5">
+            <p className="font-sans text-xs text-muted-foreground mt-1.5">
               {card.subLabel}
             </p>
           </div>
