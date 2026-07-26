@@ -25,8 +25,14 @@ export const profileService = {
         }
       });
       body = form;
-      // Let axios set multipart content-type with boundary automatically
+      headers["Content-Type"] = "multipart/form-data";
     } else {
+      const { profile_picture, ...rest } = payload;
+      body = rest;
+      // If it's explicitly null (user wants to remove it), keep it. Otherwise, if it is a string URL, omit it.
+      if (profile_picture === null) {
+        body.profile_picture = null;
+      }
       headers["Content-Type"] = "application/json";
     }
 

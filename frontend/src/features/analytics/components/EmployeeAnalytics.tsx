@@ -238,10 +238,6 @@ export function EmployeeAnalytics({ leaves, stats, isLoading }: EmployeeAnalytic
         <ChartCard title="Leave Balance" icon={Target}>
           <div className="relative flex items-center justify-center h-44">
             <BalanceRing used={usedDays} total={MAX_ANNUAL_LEAVE} />
-            <div className="absolute flex flex-col items-center pointer-events-none">
-              <span className="font-mono text-3xl font-bold text-foreground">{stats.remaining}</span>
-              <span className="text-xs text-muted-foreground font-medium">days left</span>
-            </div>
           </div>
           <div className="flex justify-between text-xs text-muted-foreground mt-2 border-t border-[#F1F5F9] pt-3">
             <span>Used: <strong className="text-foreground">{usedDays}d</strong></span>

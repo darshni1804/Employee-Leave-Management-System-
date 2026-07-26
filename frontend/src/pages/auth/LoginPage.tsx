@@ -193,19 +193,19 @@ export function LoginPage() {
         <div className="grid grid-cols-2 gap-2 text-xs">
           <button
             type="button"
-            onClick={() => handleQuickFill("employee@example.com", "Password123!")}
+            onClick={() => handleQuickFill("employee@technodha.com", "password123")}
             className="flex flex-col items-start p-2.5 rounded-lg border bg-accent/30 hover:bg-accent hover:border-primary/40 transition-all text-left"
           >
             <span className="font-semibold text-primary">Employee Role</span>
-            <span className="text-muted-foreground truncate w-full">EMP001</span>
+            <span className="text-muted-foreground truncate w-full">EMP-001</span>
           </button>
           <button
             type="button"
-            onClick={() => handleQuickFill("manager@example.com", "Password123!")}
+            onClick={() => handleQuickFill("manager@technodha.com", "password123")}
             className="flex flex-col items-start p-2.5 rounded-lg border bg-accent/30 hover:bg-accent hover:border-primary/40 transition-all text-left"
           >
             <span className="font-semibold text-primary">Manager Role</span>
-            <span className="text-muted-foreground truncate w-full">MGR001</span>
+            <span className="text-muted-foreground truncate w-full">MGR-001</span>
           </button>
         </div>
       </div>

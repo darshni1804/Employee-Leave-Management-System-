@@ -8,7 +8,7 @@
  *  2. Edit Profile  — first/last name, designation, department, location, phone, bio, photo
  *  3. Security      — change password (old / new / confirm)
  */
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   User,
   Mail,
@@ -17,7 +17,6 @@ import {
   MapPin,
   Shield,
   Edit3,
-  Camera,
   Briefcase,
   Eye,
   EyeOff,
@@ -122,9 +121,7 @@ export function ProfilePage() {
   const [bio, setBio] = useState("");
   const [designation, setDesignation] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
-  const [photoPreview, setPhotoPreview] = useState<string | null>(user?.profile_picture ?? null);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Removed profile picture state
 
   // ── Password form state ──
   const [oldPassword, setOldPassword] = useState("");
@@ -141,7 +138,6 @@ export function ProfilePage() {
       setLastName(user.last_name ?? "");
       setDepartment(user.department ?? "");
       setPhone(user.phone_number ?? "");
-      setPhotoPreview(user.profile_picture ?? null);
     }
   }, [user]);
 
@@ -149,20 +145,7 @@ export function ProfilePage() {
   const initial = user?.first_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U";
   const roleLabel = user?.role === "ADMIN" ? "Admin" : user?.role === "MANAGER" ? "Manager" : "Employee";
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setPhotoFile(file);
-    const reader = new FileReader();
-    reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
-    reader.readAsDataURL(file);
-  };
-
-  const handleRemovePhoto = () => {
-    setPhotoFile(null);
-    setPhotoPreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
+  // Removed photo handlers
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,7 +155,6 @@ export function ProfilePage() {
       last_name: lastName,
       phone_number: phone,
       department,
-      ...(photoFile ? { profile_picture: photoFile } : {}),
     });
   };
 
@@ -192,7 +174,7 @@ export function ProfilePage() {
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto">
       <PageHeader
         icon={UserCircle}
         title="My Profile"
@@ -207,28 +189,9 @@ export function ProfilePage() {
         <div className="px-6 pb-6 -mt-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           {/* Avatar */}
           <div className="relative">
-            <div className="h-24 w-24 rounded-2xl border-4 border-white bg-muted/80 flex items-center justify-center overflow-hidden shadow-md">
-              {photoPreview ? (
-                <img src={photoPreview} alt="Avatar" className="h-full w-full object-cover" />
-              ) : (
-                <span className="text-3xl font-bold text-[#1E293B]">{initial}</span>
-              )}
+            <div className="h-24 w-24 rounded-2xl border-4 border-white bg-gradient-to-br from-[#2563EB] to-[#1D4ED8] flex items-center justify-center overflow-hidden shadow-md">
+              <span className="text-3xl font-bold text-white">{initial}</span>
             </div>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="absolute -bottom-1.5 -right-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-[#2563EB] text-white shadow-md hover:bg-[#1D4ED8] transition-colors cursor-pointer"
-              title="Upload photo"
-            >
-              <Camera className="h-3.5 w-3.5" />
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handlePhotoChange}
-            />
           </div>
 
           {/* Identity */}
@@ -259,23 +222,23 @@ export function ProfilePage() {
         {/* Info Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 border-t border-border">
           {[
-            { icon: Mail, label: "Email", value: user?.email },
-            { icon: Briefcase, label: "Employee ID", value: user?.employee_id || "—" },
-            { icon: Building2, label: "Department", value: user?.department || "—" },
-            { icon: User, label: "Manager", value: user?.manager_name || "—" },
-            { icon: MapPin, label: "Location", value: location || "—" },
-            { icon: Calendar, label: "Joined", value: user?.date_of_joining ? formatDate(user.date_of_joining) : "—" },
-          ].map(({ icon: Icon, label, value }, idx) => (
+            { icon: Mail, label: "Email", value: user?.email, color: "text-blue-600", bg: "bg-blue-100" },
+            { icon: Briefcase, label: "Employee ID", value: user?.employee_id || "—", color: "text-indigo-600", bg: "bg-indigo-100" },
+            { icon: Building2, label: "Department", value: user?.department || "—", color: "text-purple-600", bg: "bg-purple-100" },
+            { icon: User, label: "Manager", value: user?.manager_name || "—", color: "text-pink-600", bg: "bg-pink-100" },
+            { icon: MapPin, label: "Location", value: location || "—", color: "text-orange-600", bg: "bg-orange-100" },
+            { icon: Calendar, label: "Joined", value: user?.date_of_joining ? formatDate(user.date_of_joining) : "—", color: "text-emerald-600", bg: "bg-emerald-100" },
+          ].map(({ icon: Icon, label, value, color, bg }, idx) => (
             <div
               key={label}
-              className={`flex items-center gap-3 px-6 py-4 ${idx % 3 !== 2 ? "lg:border-r border-border" : ""} ${idx < 3 ? "sm:border-b border-border" : ""}`}
+              className={`flex items-center gap-3 px-5 py-4 ${idx % 3 !== 2 ? "lg:border-r border-border" : ""} ${idx < 3 ? "sm:border-b border-border" : ""}`}
             >
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted">
-                <Icon className="h-4 w-4 text-muted-foreground" />
+              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${bg}`}>
+                <Icon className={`h-5 w-5 ${color}`} />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
-                <p className="text-sm font-medium text-foreground truncate">{value}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-0.5">{label}</p>
+                <p className="text-[13px] font-medium text-foreground truncate">{value}</p>
               </div>
             </div>
           ))}
@@ -368,24 +331,7 @@ export function ProfilePage() {
             />
           </FormField>
 
-          {/* Photo actions */}
-          {photoPreview && (
-            <div className="flex items-center gap-3">
-              <img src={photoPreview} alt="Preview" className="h-12 w-12 rounded-xl object-cover border border-border" />
-              <div className="text-xs text-muted-foreground">
-                {photoFile ? `New photo selected: ${photoFile.name}` : "Current profile photo"}
-              </div>
-              {photoFile && (
-                <button
-                  type="button"
-                  onClick={handleRemovePhoto}
-                  className="text-xs text-[#EF4444] hover:underline ml-auto"
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-          )}
+          {/* Photo actions removed */}
 
           {saveError && <Alert type="error" message={saveError} />}
           {saveSuccess && <Alert type="success" message={saveSuccess} />}

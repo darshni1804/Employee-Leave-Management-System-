@@ -146,7 +146,12 @@ cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 ```
 
-#### 2. Backend Setup
+#### 2. Demo Login Credentials
+The system comes with a built-in command to seed a test manager and employee. If you execute the seeding command in the steps below, you can log in with:
+- **Manager:** `manager@example.com` / `Password123!`
+- **Employee:** `employee@example.com` / `Password123!`
+
+#### 3. Backend Setup
 ```powershell
 cd backend
 
@@ -248,15 +253,11 @@ npm run build
 
 ---
 
-## 📸 Screenshots
+## 📸 Visual Documentation
 
-See [docs/screenshots/README.md](docs/screenshots/README.md) for details on application screens:
-1. **Login Page:** Authentication & quick-fill role picker.
-2. **Employee Dashboard:** Live leave statistics & recent activity.
-3. **Apply Leave:** Interactive form with client/server validation.
-4. **Leave History:** Filterable, paginated table with cancel action.
-5. **Manager Dashboard:** Team leave metrics & approval queue.
-6. **Manager Review:** Approval and rejection modal workflows.
+Explore our comprehensive visual guide:
+- **[View Application Screenshots](docs/screenshots/README.md)**: A complete gallery covering the landing page, dashboards, forms, responsive design, and settings.
+- **Screen Recordings**: Watch the full end-to-end workflows in the `docs/screen recording` directory.
 
 ---
 

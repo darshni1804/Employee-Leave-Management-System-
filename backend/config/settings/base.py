@@ -48,7 +48,6 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "apps.accounts",
     "apps.leaves",
-    "apps.dashboard",
     "apps.notifications",
 ]
 

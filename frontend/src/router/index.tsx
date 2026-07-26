@@ -13,7 +13,7 @@
  *  /unauthorized         → UnauthorizedPage
  *  *                     → NotFoundPage
  */
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 import { AuthLayout } from "@/layouts/AuthLayout";
 import { EmployeeLayout } from "@/layouts/EmployeeLayout";
@@ -31,6 +31,8 @@ import { LeavesPage } from "@/pages/leaves/LeavesPage";
 import { ProfilePage } from "@/pages/profile/ProfilePage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { UnauthorizedPage } from "@/pages/UnauthorizedPage";
+
+import { LandingPage } from "@/pages/landing/LandingPage";
 
 /**
  * Dynamic layout component that renders the layout matching the authenticated user's role.
@@ -62,11 +64,11 @@ function RoleBasedDashboardPage() {
 
 export const router = createBrowserRouter([
   // ─────────────────────────────────────────
-  // Root redirect
+  // Root landing page
   // ─────────────────────────────────────────
   {
     path: "/",
-    element: <Navigate to="/dashboard" replace />,
+    element: <LandingPage />,
   },
 
   // ─────────────────────────────────────────

@@ -45,11 +45,11 @@ export function TechnodhaLogo({
         className="fill-foreground"
       />
       {/* Orange 'M' Head Circle */}
-      <circle cx="58" cy="18" r="8" fill="#FF5A00" />
+      <circle cx="58" cy="18" r="8" fill="#2563EB" />
       {/* Orange 'M' Stylized Body */}
       <path
         d="M 38 24 L 58 54 L 78 24 L 92 24 L 92 76 L 78 76 L 78 40 L 58 70 L 44 48 Z"
-        fill="#FF5A00"
+        fill="#2563EB"
       />
     </svg>
   );
@@ -70,10 +70,10 @@ export function TechnodhaLogo({
         <div className="mt-3 flex flex-col items-center min-w-0">
           <div className="flex items-center whitespace-nowrap font-black tracking-tight font-sans text-xl">
             <span className="text-foreground">TECHN</span>
-            <span className="text-[#FF5A00]">O</span>
+            <span className="text-[#2563EB]">O</span>
             <span className="text-foreground">DHA</span>
             <span className="text-foreground ml-1.5">LEAVE</span>
-            <span className="text-[#FF5A00]">MATE</span>
+            <span className="text-[#2563EB]">MATE</span>
           </div>
           <div className="h-[1px] w-full bg-slate-300 my-1 opacity-80" />
           <span className="whitespace-nowrap text-[9px] font-bold text-muted-foreground tracking-widest uppercase">
@@ -98,10 +98,10 @@ export function TechnodhaLogo({
         {/* Title row */}
         <div className="flex items-center whitespace-nowrap text-xs font-black tracking-tight font-sans">
           <span className="text-foreground">TECHN</span>
-          <span className="text-[#FF5A00]">O</span>
+          <span className="text-[#2563EB]">O</span>
           <span className="text-foreground">DHA</span>
           <span className="text-foreground ml-1.5">LEAVE</span>
-          <span className="text-[#FF5A00]">MATE</span>
+          <span className="text-[#2563EB]">MATE</span>
         </div>
 
         {/* Divider Line */}
